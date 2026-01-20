@@ -381,7 +381,7 @@ def generate_discussion_section(
 def save_discussion_output(
     discussion: str,
     references: List[str],
-    output_dir: str = ".",
+    output_dir: str = "results",
     filename_prefix: str = "generated_discussion"
 ):
     """

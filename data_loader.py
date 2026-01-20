@@ -199,12 +199,12 @@ def load_cca_results(
     )
 
 
-def load_default_cca_results(base_dir: str = ".") -> CCAResults:
+def load_default_cca_results(base_dir: str = "input") -> CCAResults:
     """
     Load CCA results from default file paths.
 
     Args:
-        base_dir: Base directory containing all the data files
+        base_dir: Base directory containing all the data files (default: input)
 
     Returns:
         CCAResults object
@@ -335,7 +335,7 @@ if __name__ == "__main__":
     print("Testing data loader...")
 
     try:
-        results = load_default_cca_results()
+        results = load_default_cca_results("input")
 
         print(f"\nLoaded {len(results.x_loadings)} X loadings")
         print(f"Loaded {len(results.y_loadings)} Y loadings")

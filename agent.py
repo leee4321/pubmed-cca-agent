@@ -37,8 +37,8 @@ def configure_genai():
 
 
 def generate_paper_sections(
-    base_dir: str = ".",
-    output_dir: str = "output",
+    base_dir: str = "input",
+    output_dir: str = "results",
     use_llm: bool = True,
     search_literature: bool = True,
     verbose: bool = True
@@ -47,8 +47,8 @@ def generate_paper_sections(
     Generate Results and Discussion sections for a scientific paper.
 
     Args:
-        base_dir: Directory containing input data files
-        output_dir: Directory to save output files
+        base_dir: Directory containing input data files (default: input)
+        output_dir: Directory to save output files (default: results)
         use_llm: Whether to use LLM for generation
         search_literature: Whether to search PubMed for prior literature
         verbose: Whether to print progress
@@ -114,7 +114,7 @@ def save_output(
     results_text: str,
     discussion_text: str,
     references: list,
-    output_dir: str = "output"
+    output_dir: str = "results"
 ):
     """Save generated sections to files."""
     os.makedirs(output_dir, exist_ok=True)
@@ -247,13 +247,13 @@ def main():
     )
     parser.add_argument(
         '--input-dir', '-i',
-        default='.',
-        help='Directory containing input data files (default: current directory)'
+        default='input',
+        help='Directory containing input data files (default: input)'
     )
     parser.add_argument(
         '--output-dir', '-o',
-        default='output',
-        help='Directory to save output files (default: output)'
+        default='results',
+        help='Directory to save output files (default: results)'
     )
     parser.add_argument(
         '--no-llm',

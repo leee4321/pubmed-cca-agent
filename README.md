@@ -21,10 +21,20 @@ pubmed_cca_agent/
 ├── discussion_generator.py  # Discussion section generation with PubMed integration
 ├── pubmed_tool.py           # PubMed API wrapper with specialized query builders
 ├── requirements.txt         # Python dependencies
-└── README.md
+├── README.md
+├── input/                   # Input data files (default location)
+│   ├── bootstrap_result_summary_x_loading_comp1.csv
+│   ├── bootstrap_result_summary_y_loading_comp1.csv
+│   ├── FreeSurfer_label.csv
+│   ├── analysis_results_description.txt
+│   ├── Introduction.txt
+│   └── Methods.txt
+└── output/                  # Generated output files
 ```
 
 ## Input Files Required
+
+Place the following files in the `input/` directory:
 
 | File | Description |
 |------|-------------|
@@ -82,7 +92,7 @@ python agent.py --mode interactive
 ```
 Options:
   --mode, -m        Operation mode: generate, interactive, results, discussion
-  --input-dir, -i   Directory containing input data files (default: current)
+  --input-dir, -i   Directory containing input data files (default: input)
   --output-dir, -o  Directory to save output files (default: output)
   --no-llm          Disable LLM, use rule-based generation only
   --no-literature   Skip PubMed literature search
