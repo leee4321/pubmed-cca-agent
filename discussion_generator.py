@@ -12,7 +12,7 @@ import time
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, field
 
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 from data_loader import (
@@ -242,8 +242,7 @@ def generate_discussion_with_llm(
     if not api_key:
         raise ValueError("GOOGLE_API_KEY not found in environment variables")
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(model_name)
+    client = genai.Client(api_key=api_key)
 
     # Format key findings
     top_neg_pgs = [(get_trait_full_name(n), e) for n, e, _, _ in summary.significant_negative_pgs[:5]]
@@ -318,7 +317,10 @@ INSTRUCTIONS FOR WRITING THE DISCUSSION:
 Write the Discussion section:"""
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt
+        )
         discussion_text = response.text
 
         return discussion_text, ref_list

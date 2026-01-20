@@ -10,7 +10,7 @@ import argparse
 from datetime import datetime
 from typing import Optional, Tuple
 
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 from data_loader import load_default_cca_results, CCAResults
@@ -25,14 +25,13 @@ from pubmed_tool import pubmed_search_and_get_abstracts
 load_dotenv()
 
 
-def configure_genai():
-    """Configure Google Generative AI with API key."""
+def check_genai_key():
+    """Check if Google API key is set."""
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
         print("Warning: GOOGLE_API_KEY not found in environment.")
         print("Please set it in your .env file or environment variables.")
         return False
-    genai.configure(api_key=api_key)
     return True
 
 
@@ -56,8 +55,8 @@ def generate_paper_sections(
     Returns:
         Tuple of (results_text, discussion_text, references_list)
     """
-    # Ensure API is configured
-    if use_llm and not configure_genai():
+    # Ensure API key is present
+    if use_llm and not check_genai_key():
         print("Falling back to rule-based generation (no LLM).")
         use_llm = False
 

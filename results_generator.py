@@ -9,7 +9,7 @@ import os
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 from data_loader import (
@@ -227,8 +227,7 @@ def generate_results_with_llm(
         print("Warning: GOOGLE_API_KEY not found. Using manual generation.")
         return generate_results_text_manual(summary)
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(model_name)
+    client = genai.Client(api_key=api_key)
 
     # Prepare context
     intro_summary = cca_results.introduction[:1500] if len(cca_results.introduction) > 1500 else cca_results.introduction
@@ -303,7 +302,10 @@ INSTRUCTIONS:
 Write the Results section:"""
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt
+        )
         return response.text
     except Exception as e:
         print(f"Error generating Results with LLM: {e}")
