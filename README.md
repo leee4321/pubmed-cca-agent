@@ -29,7 +29,7 @@ pubmed_cca_agent/
 │   ├── analysis_results_description.txt
 │   ├── Introduction.txt
 │   └── Methods.txt
-└── output/                  # Generated output files
+└── results/                  # Generated output files
 ```
 
 ## Input Files Required
@@ -93,7 +93,7 @@ python agent.py --mode interactive
 Options:
   --mode, -m        Operation mode: generate, interactive, results, discussion
   --input-dir, -i   Directory containing input data files (default: input)
-  --output-dir, -o  Directory to save output files (default: output)
+  --output-dir, -o  Directory to save output files (default: results)
   --no-llm          Disable LLM, use rule-based generation only
   --no-literature   Skip PubMed literature search
   --quiet, -q       Suppress progress output
