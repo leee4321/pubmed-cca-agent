@@ -1,0 +1,86 @@
+File description: bootstrap_result_summary_x_loading_comp1.csv
+File description: bootstrap_result_summary_y_loading_comp1.csv
+
+본 파일들은 sparse Canonical Correlation Analysis (sparse CCA) 결과 중, permutation test를 통해 통계적으로 유의한 covariation mode로 판단된 component (component 1)의 loading pattern과, 해당 loading에 대한 **bootstrap 기반 신뢰구간(confidence interval)**을 요약한 결과를 담고 있다.
+
+본 분석에서는 30개의 polygenic score (PGS) traits (X) 와, 뇌 네트워크 위상 특성을 대표하는 13종의 brain network measurements (BNMs) (Y) 간의 다변량 연관성을 평가하였다.
+BNMs는 뇌 네트워크의 global-level 및 regional-level topology를 포괄적으로 반영하도록 구성되었으며, graph theory 기반 지표들에 근거한다 (Rubinov & Sporns, 2010; van den Heuvel & Sporns, 2011).
+
+X variables: Polygenic Scores (PGS)
+
+bootstrap_result_summary_x_loading_comp1.csv 파일은
+30개 trait에 대한 PGS variables (X) 가 sparse CCA의 component 1에서 보이는 loading 값과,
+5,000회 bootstrap resampling을 통해 추정된 loading의 confidence interval을 포함한다.
+이는 해당 genetic trait들이 brain network topology와 공유하는 공변 구조(covariation structure)에서
+어떤 상대적 기여도를 갖는지를 나타낸다.
+
+Y variables: Brain Network Measurements (BNMs)
+
+bootstrap_result_summary_y_loading_comp1.csv 파일은
+brain network topology를 나타내는 13종의 BNMs (Y) 에 대한 loading 결과를 포함한다.
+BNMs는 다음과 같이 구성된다.
+
+Global graph metrics (8개)
+
+network density
+
+modularity
+
+normalized modularity
+
+normalized average clustering coefficient
+
+normalized characteristic path length
+
+global efficiency
+
+normalized global efficiency
+
+small-worldness
+
+Nodal (regional) graph metrics (5개)
+
+degree
+
+strength
+
+clustering coefficient
+
+betweenness centrality
+
+nodal efficiency
+
+이러한 지표들은 각각 뇌 네트워크의 전반적 통합(global integration), 분리(segregation), 그리고 지역별 중심성(regional centrality) 특성을 반영한다.
+
+Naming convention for regional brain network measures
+
+bootstrap_result_summary_y_loading_comp1.csv 내에서 regional brain network measures는 다음 형식으로 명명되어 있다.
+
+{brain network measure}_{brain_region}
+
+
+여기서 사용된 약어는 다음과 같은 의미를 가진다.
+
+deg : degree
+
+stren : strength
+
+norm_Cc : normalized nodal efficiency
+
+일부 문헌에서는 normalized closeness centrality로도 지칭됨
+
+norm_clust_coef (clustering 관련 변수): normalized clustering coefficient
+
+BC : betweenness centrality
+
+{brain_region} 부분은 FreeSurfer parcellation 기반의 brain region 약어로 표기되어 있으며,
+각 약어에 대응하는 정식 해부학적 명칭(full anatomical name) 은
+별도의 파일인 FreeSurfer_label.csv에 정리되어 있다.
+
+Interpretation
+
+두 파일에 포함된 loading 값은,
+PGS와 brain network topology 간의 주요한 공변 구조(covariation pattern) 에서
+각 변수들이 어떤 방향성과 상대적 중요도를 갖는지를 나타낸다.
+Bootstrap 기반 confidence interval은 해당 loading 추정의 안정성(stability) 과
+표본 변동성에 대한 강건성(robustness)을 평가하기 위한 목적으로 제공된다.
