@@ -323,7 +323,7 @@ Write the Discussion section:"""
         )
         discussion_text = response.text
 
-        return discussion_text, ref_list
+        return discussion_text, ref_list, literature_text
 
     except Exception as e:
         raise RuntimeError(f"Error generating Discussion with LLM: {e}")
@@ -335,7 +335,7 @@ def generate_discussion_section(
     gather_literature: bool = True,
     verbose: bool = True,
     base_dir: str = "."
-) -> Tuple[str, List[str]]:
+) -> Tuple[str, List[str], str]:
     """
     Main function to generate the Discussion section.
 
@@ -373,16 +373,17 @@ def generate_discussion_section(
     if verbose:
         print("\nGenerating Discussion section with LLM...")
 
-    discussion, references = generate_discussion_with_llm(
+    discussion, references, literature_text = generate_discussion_with_llm(
         cca_results, summary, literature_context
     )
 
-    return discussion, references
+    return discussion, references, literature_text
 
 
 def save_discussion_output(
     discussion: str,
     references: List[str],
+    literature_text: str,
     output_dir: str = "results",
     filename_prefix: str = "generated_discussion"
 ):
@@ -392,6 +393,7 @@ def save_discussion_output(
     Args:
         discussion: Generated discussion text
         references: List of formatted references
+        literature_text: Text listing literature gathered using keyword search on PubMed. This text is included in the prompt for LLM to generate discussions.
         output_dir: Directory to save files
         filename_prefix: Prefix for output filenames
     """
@@ -411,9 +413,18 @@ def save_discussion_output(
         f.write("=" * 60 + "\n\n")
         for ref in references:
             f.write(ref + "\n\n")
+            
+    # Save literature context
+    literature_path = os.path.join(output_dir, f"{filename_prefix}_literature_text.txt")
+    with open(literature_path, 'w', encoding='utf-8') as f:
+        f.write("LITERATURE TEXT\n")
+        f.write("=" * 60 + "\n\n")
+        f.write(literature_text)
+    
 
     print(f"Discussion saved to: {discussion_path}")
     print(f"References saved to: {references_path}")
+    print(f"Literature text saved to: {literature_path}")
 
 
 if __name__ == "__main__":
@@ -423,7 +434,7 @@ if __name__ == "__main__":
 
     try:
         # Generate discussion
-        discussion, references = generate_discussion_section(
+        discussion, references, literature_text = generate_discussion_section(
             gather_literature=True,
             verbose=True
         )
@@ -444,7 +455,7 @@ if __name__ == "__main__":
             print(f"... and {len(references) - 10} more references")
 
         # Optionally save to files
-        # save_discussion_output(discussion, references)
+        # save_discussion_output(discussion, references, literature_text)
 
     except FileNotFoundError as e:
         print(f"Error: Data file not found - {e}")

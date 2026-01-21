@@ -98,7 +98,7 @@ def generate_paper_sections(
         print("Generating Discussion Section...")
         print("=" * 60)
 
-    discussion_text, references = generate_discussion_section(
+    discussion_text, references, literature_text = generate_discussion_section(
         cca_results=cca_results,
         summary=summary,
         gather_literature=search_literature,
@@ -106,13 +106,14 @@ def generate_paper_sections(
         base_dir=base_dir
     )
 
-    return results_text, discussion_text, references
+    return results_text, discussion_text, references, literature_text
 
 
 def save_output(
     results_text: str,
     discussion_text: str,
     references: list,
+    literature_text: str,
     output_dir: str = "results"
 ):
     """Save generated sections to files."""
@@ -144,6 +145,15 @@ def save_output(
         for ref in references:
             f.write(ref + "\n\n")
     print(f"References saved to: {references_path}")
+    
+    # Save literature context
+    literature_path = os.path.join(output_dir, f"literature_text_{timestamp}.txt")
+    with open(literature_path, 'w', encoding='utf-8') as f:
+        f.write("LITERATURE TEXT\n")
+        f.write("=" * 60 + "\n\n")
+        f.write(literature_text)
+    print(f"Literature text given to the LLM saved to: {literature_path}")
+    
 
     # Save combined document
     combined_path = os.path.join(output_dir, f"paper_sections_{timestamp}.txt")
@@ -217,7 +227,7 @@ def interactive_mode():
 
             elif user_input.lower() == 'discussion':
                 print("\nGenerating Discussion section...")
-                discussion, refs = generate_discussion_section(verbose=True)
+                discussion, refs, literature_text = generate_discussion_section(verbose=True)
                 print("\n" + discussion)
                 print("\nReferences:")
                 for ref in refs[:5]:
@@ -276,14 +286,14 @@ def main():
         interactive_mode()
 
     elif args.mode == 'generate':
-        results, discussion, refs = generate_paper_sections(
+        results, discussion, refs, literature_text = generate_paper_sections(
             base_dir=args.input_dir,
             output_dir=args.output_dir,
             use_llm=not args.no_llm,
             search_literature=not args.no_literature,
             verbose=not args.quiet
         )
-        save_output(results, discussion, refs, args.output_dir)
+        save_output(results, discussion, refs, literature_text, args.output_dir)
 
         print("\n" + "=" * 60)
         print("Generation complete!")
@@ -298,7 +308,7 @@ def main():
         print(results)
 
     elif args.mode == 'discussion':
-        discussion, refs = generate_discussion_section(
+        discussion, refs, literature_text = generate_discussion_section(
             gather_literature=not args.no_literature,
             verbose=not args.quiet,
             base_dir=args.input_dir
@@ -318,7 +328,7 @@ def analyze_cca_results(csv_file=None):
     print("Note: analyze_cca_results is deprecated.")
     print("Using new generation pipeline...")
 
-    results, discussion, refs = generate_paper_sections(verbose=True)
+    results, discussion, refs, literature_text = generate_paper_sections(verbose=True)
 
     print("\n" + "=" * 60)
     print("RESULTS")
