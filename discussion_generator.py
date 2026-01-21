@@ -224,7 +224,7 @@ def generate_discussion_with_llm(
     cca_results: CCAResults,
     summary: ResultsSummary,
     literature_context: LiteratureContext,
-    model_name: str = 'gemini-1.5-flash'
+    model_name: str = 'gemini-flash-latest'
 ) -> Tuple[str, List[str]]:
     """
     Generate Discussion section using Gemini LLM.
@@ -274,47 +274,138 @@ KEY FINDINGS FROM CCA ANALYSIS:
         ref_map[citation] = i
         ref_list.append(f"[{i}] {format_reference(article)}")
 
-    prompt = f"""You are a scientific writer specializing in neuroimaging genetics and brain development research.
-Write a comprehensive Discussion section for a scientific paper based on the CCA findings and related literature below.
+    prompt = f"""You are a senior scientific writer and neuroscientist specializing in neuroimaging genetics and developmental neuroscience, writing for a premier journal like Nature Neuroscience, Nature Communications, or Nature Human Behaviour.
+
+Write a comprehensive, deeply analytical Discussion section based on the CCA findings and related literature below. This should be publication-ready for a Nature-style journal.
 
 STUDY CONTEXT:
 This study used sparse Canonical Correlation Analysis (SCCA) to examine the multivariate relationship between
 30 polygenic scores (PGS) for cognitive and psychiatric traits and brain network measures (BNMs) derived from
-diffusion MRI tractography in children from the ABCD study (ages 9-10 years).
+diffusion MRI tractography in approximately 11,000 children from the ABCD study (ages 9-10 years).
 
 {findings_text}
 
 RELEVANT PRIOR LITERATURE:
 {literature_text}
 
-AVAILABLE CITATIONS (use these in your discussion):
+AVAILABLE CITATIONS (integrate these naturally):
 {chr(10).join([f'{format_citation(a)}' for a in literature_context.all_references[:20]])}
 
-INSTRUCTIONS FOR WRITING THE DISCUSSION:
+INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
 
-1. STRUCTURE (5-7 paragraphs):
-   a) Opening paragraph: Summarize the main finding - the identified mode of covariation between PGS and brain networks
-   b) Interpretation of PGS loadings: Discuss what the loading pattern (negative for cognitive traits, positive for
-      psychiatric traits) suggests about the genetic architecture of brain network organization
-   c) Brain network interpretation: Discuss which brain regions and network properties were most associated
-   d) Comparison with prior literature: Compare findings to previous studies (use the provided citations)
-   e) Biological/mechanistic interpretation: Propose potential mechanisms linking genetic predisposition to brain networks
-   f) Implications: Discuss implications for understanding brain development and psychiatric risk
-   g) Limitations and future directions
+1. STRUCTURE AND LENGTH:
+   - Write 10-15 paragraphs organized into clear subsections with descriptive subheadings
+   - Target length: 2,500-3,500 words
+   - Use a logical flow: main findings → interpretation → mechanisms → literature comparison → implications → limitations → future directions
 
-2. CITATION STYLE:
-   - Use author-year format: (Author et al., Year) or Author et al. (Year)
-   - Only cite papers from the provided literature list
-   - Integrate citations naturally into the text
+2. OPENING PARAGRAPH (1-2 paragraphs):
+   - Provide a compelling summary of the principal finding
+   - State the key novelty and significance of this work
+   - Emphasize the multivariate nature and developmental timing (preadolescent)
+   - Highlight the bipolar genetic architecture (cognitive vs psychiatric/metabolic)
+   - Set up the narrative for the rest of the discussion
 
-3. TONE:
-   - Academic and formal
-   - Cautious interpretation (use "may", "suggests", "appears to")
-   - Acknowledge limitations
+3. INTERPRETATION OF THE GENETIC ARCHITECTURE (2-3 paragraphs):
+   Subsection: "A shared genetic architecture linking cognitive ability and psychiatric vulnerability"
+   - Deeply analyze the bipolar PGS loading pattern
+   - Discuss genetic pleiotropy and shared biological pathways
+   - Explain what the negative cognitive loadings vs positive psychiatric loadings mean biologically
+   - Connect to concepts like the 'p-factor' (general psychopathology factor)
+   - Discuss the inclusion of metabolic traits (BMI, smoking) and what this suggests about generalized vulnerability
+   - Compare the magnitude and consistency of loadings across trait categories
+   - Discuss the implications of finding this pattern in preadolescent children
 
-4. LENGTH: Approximately 800-1200 words
+4. BRAIN NETWORK INTERPRETATION (2-3 paragraphs):
+   Subsection: "Structural brain network substrates of polygenic risk"
+   - Analyze which brain regions and network properties were most strongly associated
+   - Discuss the functional significance of identified regions (e.g., putamen, hippocampus, insula, temporal pole)
+   - Explain why these specific regions/networks are biologically plausible given the PGS involved
+   - Discuss the absence of significant global network metrics and what this implies
+   - Analyze regional vs global findings in terms of developmental neurobiology
+   - Consider lateralization patterns and anatomical specificity
+   - Relate structural connectivity findings to known functional networks (default mode, salience, executive control)
 
-Write the Discussion section:"""
+5. MECHANISTIC INTERPRETATION (2-3 paragraphs):
+   Subsection: "Biological mechanisms linking genetic risk to brain network organization"
+   - Propose specific molecular and cellular mechanisms
+   - Discuss neurodevelopmental processes (myelination, synaptic pruning, axonal guidance, neurogenesis)
+   - Connect to known biological pathways (e.g., synaptic signaling, neurotransmitter systems, inflammatory processes)
+   - Discuss the developmental timing - why these patterns are visible at ages 9-10
+   - Consider gene expression patterns in identified brain regions
+   - Discuss how genetic variants might influence white matter microstructure
+   - Propose testable hypotheses about causal pathways
+
+6. COMPARISON WITH PRIOR LITERATURE (2-3 paragraphs):
+   Subsection: "Convergence with prior neuroimaging-genetic studies"
+   - Extensively cite and compare with the provided literature
+   - Highlight consistencies with previous findings
+   - Discuss discrepancies and potential reasons
+   - Compare with adult studies vs other pediatric studies
+   - Discuss how multivariate approaches (CCA) provide advantages over univariate approaches
+   - Integrate findings from GWAS, imaging genetics, and developmental neuroscience
+   - Use at least 10-15 citations naturally integrated throughout
+
+7. CLINICAL AND TRANSLATIONAL IMPLICATIONS (2 paragraphs):
+   Subsection: "Implications for early risk identification and intervention"
+   - Discuss potential for early biomarkers of psychiatric risk
+   - Consider precision psychiatry and personalized medicine applications
+   - Discuss preventive interventions during sensitive developmental periods
+   - Address the ethical considerations of polygenic risk prediction in children
+   - Discuss potential for monitoring intervention efficacy
+   - Consider public health implications
+
+8. LIMITATIONS (1-2 paragraphs):
+   Subsection: "Limitations and caveats"
+   - Provide a thorough, honest discussion of limitations
+   - Cross-sectional design and inability to infer causation
+   - PGS derived from adult GWAS applied to children
+   - Population ancestry considerations and generalizability
+   - Measurement limitations of diffusion MRI and network construction
+   - Statistical considerations (multiple testing, model selection)
+   - Unmeasured confounders and environmental factors
+   - Limited functional outcome data at this age
+   - Each limitation should be substantive (2-3 sentences)
+
+9. FUTURE DIRECTIONS (1 paragraph):
+   Subsection: "Future research directions"
+   - Propose specific, concrete future studies
+   - Longitudinal follow-up to track developmental trajectories
+   - Integration with functional MRI and other modalities
+   - Gene-environment interaction studies
+   - Validation in independent cohorts and diverse populations
+   - Mechanistic studies (animal models, in vitro)
+   - Clinical translation and intervention studies
+
+10. WRITING STYLE:
+    - Use sophisticated, precise scientific language
+    - Balance technical depth with clarity
+    - Employ cautious interpretation ("suggests", "may indicate", "is consistent with", "appears to reflect")
+    - Use active voice where appropriate for impact
+    - Create smooth transitions between paragraphs and sections
+    - Build a compelling narrative arc
+    - Maintain objectivity while highlighting significance
+
+11. CITATION INTEGRATION:
+    - Use author-year format: (Author et al., Year) or "Author et al. (Year) showed..."
+    - Integrate citations naturally into the narrative, not as lists
+    - Cite multiple papers when discussing a concept
+    - Use citations to support claims, provide context, and show convergence/divergence
+    - Only cite papers from the provided literature list
+
+12. QUANTITATIVE DEPTH:
+    - Reference specific loading values and effect sizes from the results
+    - Discuss the magnitude and precision of estimates
+    - Compare effect sizes across different PGS and brain regions
+    - Relate findings to clinically meaningful outcomes where possible
+
+13. AVOID:
+    - Do NOT simply restate results
+    - Do NOT make unsupported causal claims
+    - Do NOT ignore contradictory evidence
+    - Do NOT use vague, hand-waving explanations
+    - Do NOT neglect important limitations
+
+Write a comprehensive, Nature-quality Discussion section following these guidelines:"""
 
     try:
         response = client.models.generate_content(
