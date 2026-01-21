@@ -20,7 +20,7 @@ from discussion_generator import (
     gather_literature_for_discussion,
     save_discussion_output
 )
-from figure_generator import generate_figures
+from figure_generator import generate_figures as create_figures
 from pubmed_tool import pubmed_search_and_get_abstracts
 
 load_dotenv()
@@ -137,7 +137,8 @@ def generate_paper_sections(
             fig_x_path = x_loading_path if x_loading_path else os.path.join(base_dir, "bootstrap_result_summary_x_loading_comp1.csv")
             fig_y_path = y_loading_path if y_loading_path else os.path.join(base_dir, "bootstrap_result_summary_y_loading_comp1.csv")
             
-            generate_figures(
+            
+            create_figures(
                 x_loading_path=fig_x_path,
                 y_loading_path=fig_y_path,
                 output_dir=output_dir
