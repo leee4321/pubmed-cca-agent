@@ -172,13 +172,14 @@ def gather_literature_for_discussion(
     return context
 
 
-def format_literature_for_prompt(context: LiteratureContext, max_chars: int = 8000) -> str:
+def format_literature_for_prompt(context: LiteratureContext, max_chars: Optional[int] = None, max_abstract_length: Optional[int] = None) -> str:
     """
     Format gathered literature into a prompt-friendly string.
 
     Args:
         context: LiteratureContext with articles
-        max_chars: Maximum characters to include
+        max_chars: Maximum characters to include (None means no limit)
+        max_abstract_length: Maximum characters per abstract (None means no limit)
 
     Returns:
         Formatted string of literature summaries
@@ -190,31 +191,31 @@ def format_literature_for_prompt(context: LiteratureContext, max_chars: int = 80
         sections.append("## PGS-Brain Association Literature")
         for trait, articles in context.pgs_brain_articles.items():
             sections.append(f"\n### {trait}")
-            sections.append(format_articles_for_context(articles, max_abstract_length=300))
+            sections.append(format_articles_for_context(articles, max_abstract_length=max_abstract_length))
 
     # Brain region literature
     if context.brain_region_articles:
         sections.append("\n## Brain Region Function Literature")
         for region, articles in list(context.brain_region_articles.items())[:3]:
             sections.append(f"\n### {region}")
-            sections.append(format_articles_for_context(articles[:2], max_abstract_length=300))
+            sections.append(format_articles_for_context(articles[:2], max_abstract_length=max_abstract_length))
 
     # Network metric literature
     if context.network_metric_articles:
         sections.append("\n## Network Metric Literature")
         for metric, articles in list(context.network_metric_articles.items())[:2]:
             sections.append(f"\n### {metric}")
-            sections.append(format_articles_for_context(articles[:2], max_abstract_length=300))
+            sections.append(format_articles_for_context(articles[:2], max_abstract_length=max_abstract_length))
 
     # General literature
     if context.general_topic_articles:
         sections.append("\n## General Topic Literature")
-        sections.append(format_articles_for_context(context.general_topic_articles[:3], max_abstract_length=300))
+        sections.append(format_articles_for_context(context.general_topic_articles[:3], max_abstract_length=max_abstract_length))
 
     full_text = "\n".join(sections)
 
-    # Truncate if too long
-    if len(full_text) > max_chars:
+    # Truncate if too long (explicit None check allows 0 to be a valid value)
+    if max_chars is not None and len(full_text) > max_chars:
         full_text = full_text[:max_chars] + "\n\n[Literature truncated due to length...]"
 
     return full_text

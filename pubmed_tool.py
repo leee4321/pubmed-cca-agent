@@ -340,16 +340,27 @@ def format_reference(article: PubMedArticle) -> str:
     return ref
 
 
-def format_articles_for_context(articles: List[PubMedArticle], max_abstract_length: int = 500) -> str:
+def format_articles_for_context(articles: List[PubMedArticle], max_abstract_length: Optional[int] = None) -> str:
     """
     Format a list of articles into a context string for LLM processing.
+    
+    Args:
+        articles: List of PubMedArticle instances
+        max_abstract_length: Maximum characters per abstract (None means no limit)
     """
     if not articles:
         return "No relevant articles found."
 
     context_parts = []
     for i, article in enumerate(articles, 1):
-        abstract = article.abstract[:max_abstract_length] + "..." if len(article.abstract) > max_abstract_length else article.abstract
+        if max_abstract_length is None:
+            abstract = article.abstract
+        elif max_abstract_length > 0:
+            abstract = article.abstract[:max_abstract_length] + "..." if len(article.abstract) > max_abstract_length else article.abstract
+        else:
+            # max_abstract_length is 0 or negative, use empty abstract
+            abstract = ""
+        
         context_parts.append(
             f"[{i}] {format_citation(article)}\n"
             f"Title: {article.title}\n"
