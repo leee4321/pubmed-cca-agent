@@ -8,9 +8,10 @@
 - **Output**: 1,500-2,500 words with detailed subsections
 
 ### Discussion Section  
-- **Model**: `gemini-2.5-pro`
-- **Rationale**: Superior reasoning and analytical capabilities for deep scientific insights
+- **Model**: `gemini-2.5-flash`
+- **Rationale**: Latest generation Flash model with improved reasoning capabilities
 - **Output**: 3,000-4,000 words with minimal subsections (3-4 max)
+- **Note**: Originally planned to use `gemini-2.5-pro`, but it's not available in free tier (quota: 0)
 
 ## Discussion Section Improvements
 
@@ -45,27 +46,33 @@
 - Cost: $0.075/$0.30 per 1M tokens (input/output)
 - RPM limit (free tier): 15
 
-### gemini-2.5-pro (Discussion)
-- Speed: Slower (2-3x)
-- Cost: $1.25/$5.00 per 1M tokens (input/output)
-- RPM limit (free tier): 2
-- Quality: Significantly better for complex analysis
+### gemini-2.5-flash (Discussion)
+- Speed: Fast (similar to flash-latest, possibly slightly slower)
+- Cost: Similar to flash-latest (~$0.075/$0.30 per 1M tokens)
+- RPM limit (free tier): 15
+- Quality: Latest generation with improved reasoning over previous flash models
+
+### gemini-2.5-pro (Not Available in Free Tier)
+- Status: ❌ Quota = 0 in free tier
+- Would require paid tier subscription
+- Cost on paid tier: $1.25/$5.00 per 1M tokens (input/output)
 
 ## Expected Cost Per Run
 
-### With New Configuration:
-- Results (flash): ~$0.001 (3K input, 2.5K output)
-- Discussion (pro): ~$0.040 (12K input, 5K output)
-- **Total per run**: ~$0.041 (vs $0.003 with all-flash)
+### With Current Configuration:
+- Results (flash-latest): ~$0.001 (3K input, 2.5K output)
+- Discussion (2.5-flash): ~$0.002 (12K input, 5K output)
+- **Total per run**: ~$0.003 (all free tier compatible)
 
 ### Free Tier Limits:
-- Can run ~60 times per day (limited by pro's 2 RPM)
-- Still completely free if staying within limits
+- Can run ~450 times per day (limited by 15 RPM for both models)
+- Completely free within quota limits
 
 ## Benefits of This Configuration
 
-✅ **Best of both worlds**: Speed for Results, Quality for Discussion
-✅ **Cost-effective**: Only use expensive model where it matters most
-✅ **Better Discussion quality**: Deeper insights, better literature integration
-✅ **Maintained speed**: Results generation still fast
-✅ **Still free tier compatible**: 60 runs/day sufficient for most use cases
+✅ **Latest generation models**: Both using modern Gemini 2.x architecture
+✅ **Improved Discussion quality**: Enhanced prompts + newer model = better insights
+✅ **Cost-effective**: All free tier, no quota concerns
+✅ **Fast execution**: Both models are flash variants, no speed penalty
+✅ **Free tier compatible**: 450 runs/day sufficient for extensive use
+✅ **Better literature integration**: Enhanced prompts drive 20-30+ citations
