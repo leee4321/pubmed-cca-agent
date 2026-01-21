@@ -5,6 +5,7 @@ from google import genai
 import torch
 import pickle
 import logging
+from datetime import datetime
 
 logging.basicConfig(
     level=os.environ.get("LOGGING_LEVEL", "INFO"),
@@ -293,12 +294,14 @@ Answer with yes or no. Enclose your answer with \\box{{}}.
         
 if __name__ == "__main__":
     
+    test_file_dir = "test_files"
+    output_dir = "results"
     
-    if os.path.exists('./discussion.txt') and os.path.exists('./literature_context.pickle'):
-        with open('./discussion.txt', 'r') as f:
+    if os.path.exists(os.path.join(test_file_dir, 'discussion.txt')) and os.path.exists(os.path.join(test_file_dir, 'literature_context.pickle')):
+        with open(os.path.join(test_file_dir, 'discussion.txt'), 'r') as f:
             discussion = f.read()
         
-        with open('./literature_context.pickle', 'rb') as f:
+        with open(os.path.join(test_file_dir, 'literature_context.pickle'), 'rb') as f:
             literature_context = pickle.load(f)
         
     else:
@@ -308,17 +311,19 @@ if __name__ == "__main__":
                 base_dir="./input"
             )
         
-        with open('./discussion.txt', 'w') as f:
+        with open(os.path.join(test_file_dir, 'discussion.txt'), 'w') as f:
             f.write(discussion)
             
-        with open('./literature_context.pickle', 'wb') as f:
+        with open(os.path.join(test_file_dir, 'literature_context.pickle'), 'wb') as f:
             pickle.dump(literature_context, f)
         
     
     factchecker = FactChecker()
     verification_result = factchecker.verify_discussion(discussion, literature_context)
     
-    with open('outputs/verification_result.txt', 'w') as f:
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    with open(os.path.join(output_dir, f'verification_result_{timestamp}.txt'), 'w') as f:
         f.write('='*50)
         f.write('\n')
         f.write(f"Total citations: {verification_result['total_citations']}\n")
