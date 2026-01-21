@@ -209,7 +209,7 @@ showed significant loadings (95% confidence interval not crossing zero). Similar
 def generate_results_with_llm(
     cca_results: CCAResults,
     summary: ResultsSummary,
-    model_name: str = 'gemini-1.5-flash'
+    model_name: str = 'gemini-flash-latest'
 ) -> str:
     """
     Generate Results section using Gemini LLM.
