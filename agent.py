@@ -98,7 +98,7 @@ def generate_paper_sections(
         print("Generating Discussion Section...")
         print("=" * 60)
 
-    discussion_text, references, literature_text = generate_discussion_section(
+    discussion_text, references, literature_text, literature_context = generate_discussion_section(
         cca_results=cca_results,
         summary=summary,
         gather_literature=search_literature,
@@ -227,7 +227,7 @@ def interactive_mode():
 
             elif user_input.lower() == 'discussion':
                 print("\nGenerating Discussion section...")
-                discussion, refs, literature_text = generate_discussion_section(verbose=True)
+                discussion, refs, literature_text, literature_context = generate_discussion_section(verbose=True)
                 print("\n" + discussion)
                 print("\nReferences:")
                 for ref in refs[:5]:
@@ -308,7 +308,7 @@ def main():
         print(results)
 
     elif args.mode == 'discussion':
-        discussion, refs, literature_text = generate_discussion_section(
+        discussion, refs, literature_text, literature_context = generate_discussion_section(
             gather_literature=not args.no_literature,
             verbose=not args.quiet,
             base_dir=args.input_dir

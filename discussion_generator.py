@@ -378,7 +378,7 @@ def generate_discussion_section(
         cca_results, summary, literature_context
     )
 
-    return discussion, references, literature_text
+    return discussion, references, literature_text, literature_context
 
 
 def save_discussion_output(
@@ -435,7 +435,7 @@ if __name__ == "__main__":
 
     try:
         # Generate discussion
-        discussion, references, literature_text = generate_discussion_section(
+        discussion, references, literature_text, literature_context = generate_discussion_section(
             gather_literature=True,
             verbose=True
         )
