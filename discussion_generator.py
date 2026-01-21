@@ -224,7 +224,7 @@ def generate_discussion_with_llm(
     cca_results: CCAResults,
     summary: ResultsSummary,
     literature_context: LiteratureContext,
-    model_name: str = 'gemini-flash-latest'
+    model_name: str = 'gemini-2.5-pro'
 ) -> Tuple[str, List[str]]:
     """
     Generate Discussion section using Gemini LLM.
@@ -276,7 +276,7 @@ KEY FINDINGS FROM CCA ANALYSIS:
 
     prompt = f"""You are a senior scientific writer and neuroscientist specializing in neuroimaging genetics and developmental neuroscience, writing for a premier journal like Nature Neuroscience, Nature Communications, or Nature Human Behaviour.
 
-Write a comprehensive, deeply analytical Discussion section based on the CCA findings and related literature below. This should be publication-ready for a Nature-style journal.
+Write a comprehensive, deeply analytical Discussion section based on the CCA findings and related literature below. This should be publication-ready for a Nature-style journal with extensive scientific insights drawn from prior literature.
 
 STUDY CONTEXT:
 This study used sparse Canonical Correlation Analysis (SCCA) to examine the multivariate relationship between
@@ -288,124 +288,152 @@ diffusion MRI tractography in approximately 11,000 children from the ABCD study 
 RELEVANT PRIOR LITERATURE:
 {literature_text}
 
-AVAILABLE CITATIONS (integrate these naturally):
+AVAILABLE CITATIONS (integrate these extensively throughout):
 {chr(10).join([f'{format_citation(a)}' for a in literature_context.all_references[:20]])}
 
 INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
 
 1. STRUCTURE AND LENGTH:
-   - Write 10-15 paragraphs organized into clear subsections with descriptive subheadings
-   - Target length: 2,500-3,500 words
-   - Use a logical flow: main findings → interpretation → mechanisms → literature comparison → implications → limitations → future directions
+   - Write 12-18 paragraphs with MINIMAL subsection headings (maximum 3-4 subsections total)
+   - Target length: 3,000-4,000 words
+   - Use flowing narrative structure rather than rigid subsections
+   - Let ideas transition naturally between paragraphs
+   - Focus on depth of analysis rather than organizational structure
 
-2. OPENING PARAGRAPH (1-2 paragraphs):
-   - Provide a compelling summary of the principal finding
-   - State the key novelty and significance of this work
-   - Emphasize the multivariate nature and developmental timing (preadolescent)
-   - Highlight the bipolar genetic architecture (cognitive vs psychiatric/metabolic)
-   - Set up the narrative for the rest of the discussion
+2. SUBSECTION STRUCTURE (Use only 3-4 major subsections):
+   - Opening (no heading): 2-3 paragraphs introducing main findings and significance
+   - "Genetic architecture and brain network substrates": 5-7 paragraphs deeply integrating genetic and neural findings
+   - "Implications and future directions": 3-4 paragraphs on clinical relevance, limitations, and future work
+   - Closing (no heading): 1-2 paragraphs synthesizing key insights
 
-3. INTERPRETATION OF THE GENETIC ARCHITECTURE (2-3 paragraphs):
-   Subsection: "A shared genetic architecture linking cognitive ability and psychiatric vulnerability"
-   - Deeply analyze the bipolar PGS loading pattern
-   - Discuss genetic pleiotropy and shared biological pathways
-   - Explain what the negative cognitive loadings vs positive psychiatric loadings mean biologically
-   - Connect to concepts like the 'p-factor' (general psychopathology factor)
-   - Discuss the inclusion of metabolic traits (BMI, smoking) and what this suggests about generalized vulnerability
-   - Compare the magnitude and consistency of loadings across trait categories
-   - Discuss the implications of finding this pattern in preadolescent children
+3. OPENING PARAGRAPHS (2-3 paragraphs, no subsection heading):
+   - Begin with a compelling statement of the principal finding
+   - Emphasize the novelty: multivariate approach, developmental timing (preadolescent), large sample
+   - Introduce the bipolar genetic architecture (cognitive vs psychiatric/metabolic traits)
+   - Set up the key questions that the discussion will address
+   - Establish why these findings matter for understanding brain development and psychiatric risk
 
-4. BRAIN NETWORK INTERPRETATION (2-3 paragraphs):
-   Subsection: "Structural brain network substrates of polygenic risk"
-   - Analyze which brain regions and network properties were most strongly associated
-   - Discuss the functional significance of identified regions (e.g., putamen, hippocampus, insula, temporal pole)
-   - Explain why these specific regions/networks are biologically plausible given the PGS involved
-   - Discuss the absence of significant global network metrics and what this implies
-   - Analyze regional vs global findings in terms of developmental neurobiology
-   - Consider lateralization patterns and anatomical specificity
-   - Relate structural connectivity findings to known functional networks (default mode, salience, executive control)
+4. MAIN DISCUSSION - "Genetic architecture and brain network substrates" (5-7 paragraphs):
+   
+   CRITICAL: This is the core of the discussion. Integrate the following themes fluidly across paragraphs:
+   
+   a) Genetic pleiotropy and shared pathways:
+      - Deeply analyze what the bipolar PGS pattern reveals about genetic architecture
+      - Connect to the 'p-factor' concept and transdiagnostic psychiatry
+      - Discuss genetic correlations between cognitive and psychiatric traits
+      - Extensively cite prior GWAS and genetic correlation studies
+      - Explain biological mechanisms of pleiotropy (shared molecular pathways, developmental timing)
+   
+   b) Brain network substrates and their functional significance:
+      - Integrate discussion of specific brain regions (putamen, hippocampus, insula, temporal pole)
+      - Explain WHY these regions are biologically plausible given the genetic findings
+      - Connect structural findings to functional networks and cognitive processes
+      - Discuss the absence of global metrics and what this reveals about network organization
+      - Cite neuroimaging studies that support or contextualize these findings
+   
+   c) Developmental neurobiology and mechanistic insights:
+      - Discuss neurodevelopmental processes: myelination, synaptic pruning, circuit formation
+      - Propose specific molecular mechanisms (neurotransmitter systems, synaptic proteins, inflammatory pathways)
+      - Explain why these patterns are visible at ages 9-10 (critical developmental period)
+      - Connect to gene expression atlases and developmental transcriptomics
+      - Discuss how genetic variants influence white matter microstructure
+      - Cite developmental neuroscience and molecular studies extensively
+   
+   d) Integration with prior neuroimaging-genetic literature:
+      - Compare findings with previous imaging genetics studies (both univariate and multivariate)
+      - Highlight convergence with prior work and explain discrepancies
+      - Discuss advantages of CCA over traditional approaches
+      - Compare pediatric vs adult findings
+      - Synthesize across GWAS, imaging genetics, and developmental neuroscience literatures
+      - Use 15-20+ citations naturally woven throughout this section
+   
+   WRITING APPROACH FOR THIS SECTION:
+   - Each paragraph should integrate multiple themes (genetics + brain + mechanisms + literature)
+   - Avoid separating topics into isolated paragraphs
+   - Build arguments progressively, with each paragraph deepening the analysis
+   - Use extensive citations (aim for 2-4 citations per paragraph)
+   - Connect findings to broader theoretical frameworks
+   - Propose testable hypotheses and mechanistic models
 
-5. MECHANISTIC INTERPRETATION (2-3 paragraphs):
-   Subsection: "Biological mechanisms linking genetic risk to brain network organization"
-   - Propose specific molecular and cellular mechanisms
-   - Discuss neurodevelopmental processes (myelination, synaptic pruning, axonal guidance, neurogenesis)
-   - Connect to known biological pathways (e.g., synaptic signaling, neurotransmitter systems, inflammatory processes)
-   - Discuss the developmental timing - why these patterns are visible at ages 9-10
-   - Consider gene expression patterns in identified brain regions
-   - Discuss how genetic variants might influence white matter microstructure
-   - Propose testable hypotheses about causal pathways
+5. IMPLICATIONS AND FUTURE DIRECTIONS (3-4 paragraphs):
+   
+   a) Clinical and translational implications (1-2 paragraphs):
+      - Discuss potential for early biomarkers and risk stratification
+      - Address precision psychiatry and personalized intervention
+      - Consider preventive strategies during sensitive developmental periods
+      - Discuss ethical considerations of polygenic prediction in children
+      - Cite relevant clinical and translational studies
+   
+   b) Limitations (1 paragraph):
+      - Provide honest, substantive discussion of key limitations
+      - Cross-sectional design, PGS from adult GWAS, population specificity
+      - Measurement limitations, unmeasured confounders
+      - Keep concise but thorough (3-5 sentences per limitation)
+   
+   c) Future research directions (1 paragraph):
+      - Propose specific, concrete next steps
+      - Longitudinal follow-up, multi-modal integration, mechanistic studies
+      - Validation in diverse populations, gene-environment interactions
+      - Clinical translation and intervention trials
 
-6. COMPARISON WITH PRIOR LITERATURE (2-3 paragraphs):
-   Subsection: "Convergence with prior neuroimaging-genetic studies"
-   - Extensively cite and compare with the provided literature
-   - Highlight consistencies with previous findings
-   - Discuss discrepancies and potential reasons
-   - Compare with adult studies vs other pediatric studies
-   - Discuss how multivariate approaches (CCA) provide advantages over univariate approaches
-   - Integrate findings from GWAS, imaging genetics, and developmental neuroscience
-   - Use at least 10-15 citations naturally integrated throughout
+6. CLOSING PARAGRAPHS (1-2 paragraphs, no subsection heading):
+   - Synthesize the key insights from the discussion
+   - Return to the broader significance for understanding brain development
+   - End with a forward-looking statement about implications for psychiatry and neuroscience
 
-7. CLINICAL AND TRANSLATIONAL IMPLICATIONS (2 paragraphs):
-   Subsection: "Implications for early risk identification and intervention"
-   - Discuss potential for early biomarkers of psychiatric risk
-   - Consider precision psychiatry and personalized medicine applications
-   - Discuss preventive interventions during sensitive developmental periods
-   - Address the ethical considerations of polygenic risk prediction in children
-   - Discuss potential for monitoring intervention efficacy
-   - Consider public health implications
+7. CITATION STRATEGY (CRITICAL):
+   - Aim for 20-30+ total citations throughout the discussion
+   - Integrate citations naturally: "Previous work has shown... (Author et al., Year)"
+   - Cluster related citations: "...consistent with multiple studies (Author1 et al., Year1; Author2 et al., Year2)"
+   - Use citations to build arguments, not just support isolated facts
+   - Cite both supporting and contrasting evidence
+   - Only use papers from the provided literature list
+   - Author-year format: (Author et al., Year) or "Author et al. (Year) demonstrated..."
 
-8. LIMITATIONS (1-2 paragraphs):
-   Subsection: "Limitations and caveats"
-   - Provide a thorough, honest discussion of limitations
-   - Cross-sectional design and inability to infer causation
-   - PGS derived from adult GWAS applied to children
-   - Population ancestry considerations and generalizability
-   - Measurement limitations of diffusion MRI and network construction
-   - Statistical considerations (multiple testing, model selection)
-   - Unmeasured confounders and environmental factors
-   - Limited functional outcome data at this age
-   - Each limitation should be substantive (2-3 sentences)
+8. SCIENTIFIC DEPTH AND INSIGHT:
+   - Go beyond describing findings to explaining WHY and HOW
+   - Propose mechanistic models and testable hypotheses
+   - Connect molecular, cellular, circuit, and behavioral levels of analysis
+   - Discuss evolutionary and developmental perspectives where relevant
+   - Address methodological innovations and their implications
+   - Consider alternative interpretations and address them
+   - Relate findings to broader theoretical frameworks in neuroscience and psychiatry
 
-9. FUTURE DIRECTIONS (1 paragraph):
-   Subsection: "Future research directions"
-   - Propose specific, concrete future studies
-   - Longitudinal follow-up to track developmental trajectories
-   - Integration with functional MRI and other modalities
-   - Gene-environment interaction studies
-   - Validation in independent cohorts and diverse populations
-   - Mechanistic studies (animal models, in vitro)
-   - Clinical translation and intervention studies
+9. WRITING STYLE:
+   - Sophisticated, precise scientific language
+   - Balance technical depth with accessibility
+   - Use cautious interpretation: "suggests", "may indicate", "is consistent with", "appears to"
+   - Active voice for impact when appropriate
+   - Smooth transitions between ideas and paragraphs
+   - Build a compelling narrative arc
+   - Maintain objectivity while conveying significance
+   - Vary sentence structure for readability
 
-10. WRITING STYLE:
-    - Use sophisticated, precise scientific language
-    - Balance technical depth with clarity
-    - Employ cautious interpretation ("suggests", "may indicate", "is consistent with", "appears to reflect")
-    - Use active voice where appropriate for impact
-    - Create smooth transitions between paragraphs and sections
-    - Build a compelling narrative arc
-    - Maintain objectivity while highlighting significance
+10. QUANTITATIVE INTEGRATION:
+    - Reference specific loading values and effect sizes
+    - Discuss magnitude and precision of estimates
+    - Compare effect sizes across PGS and brain regions
+    - Relate statistical findings to biological and clinical significance
+    - Use quantitative comparisons with prior literature where possible
 
-11. CITATION INTEGRATION:
-    - Use author-year format: (Author et al., Year) or "Author et al. (Year) showed..."
-    - Integrate citations naturally into the narrative, not as lists
-    - Cite multiple papers when discussing a concept
-    - Use citations to support claims, provide context, and show convergence/divergence
-    - Only cite papers from the provided literature list
+11. CRITICAL REQUIREMENTS:
+    - MINIMIZE subsection headings (only 3-4 total)
+    - MAXIMIZE literature integration (20-30+ citations)
+    - EMPHASIZE mechanistic insights and biological interpretation
+    - CONNECT findings across multiple levels of analysis
+    - PROPOSE testable hypotheses and future directions
+    - MAINTAIN narrative flow rather than checklist structure
 
-12. QUANTITATIVE DEPTH:
-    - Reference specific loading values and effect sizes from the results
-    - Discuss the magnitude and precision of estimates
-    - Compare effect sizes across different PGS and brain regions
-    - Relate findings to clinically meaningful outcomes where possible
+12. AVOID:
+    - Excessive subsection headings (no more than 3-4 total)
+    - Simply restating results without interpretation
+    - Unsupported causal claims
+    - Vague, hand-waving explanations
+    - Ignoring contradictory evidence or alternative interpretations
+    - Superficial treatment of complex topics
+    - Isolated discussion of topics without integration
 
-13. AVOID:
-    - Do NOT simply restate results
-    - Do NOT make unsupported causal claims
-    - Do NOT ignore contradictory evidence
-    - Do NOT use vague, hand-waving explanations
-    - Do NOT neglect important limitations
-
-Write a comprehensive, Nature-quality Discussion section following these guidelines:"""
+Write a comprehensive, deeply insightful Discussion section that extensively integrates prior literature to provide scientific depth and mechanistic understanding:"""
 
     try:
         response = client.models.generate_content(
