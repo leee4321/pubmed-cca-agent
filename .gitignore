@@ -1,2 +1,6 @@
 .venv/
 .env
+
+# Ignore future outputs and logs
+results/
+script/slurm_logs/

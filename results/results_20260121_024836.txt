@@ -1,0 +1,52 @@
+RESULTS
+============================================================
+
+## Results
+
+### Identification of a Robust Canonical Mode Linking Polygenic Predisposition to Brain Network Architecture
+
+Leveraging sparse Canonical Correlation Analysis (SCCA) on the large-scale Adolescent Brain and Cognitive Development (ABCD) cohort (N $\approx$ 11,000), we identified a single, highly robust canonical mode (Mode 1) that maximally associates multivariate Polygenic Scores (PGSs) with a broad array of structural Brain Network Measures (BNMs). This mode establishes a significant and distributed association between genetic predispositions for cognitive ability and psychiatric risk on one hand, and regional alterations in connectivity metrics (strength and degree) on the other.
+
+The identified canonical mode involved a substantial proportion of the tested variables: 19 out of 30 PGS variables (63.3%) and 185 out of 428 BNM variables (43.2%) contributed significantly to the multivariate association, defined by their 95% confidence intervals (CI) excluding zero based on 5,000 bootstrap iterations. The resulting canonical variates defined a genetic axis anchored by high cognitive ability at one pole (negative loadings) and high psychiatric/metabolic risk at the opposing pole (positive loadings), corresponding to a neural axis characterized by specific alterations in regional network strength and degree (Fig. 1a, Supplementary Table 1).
+
+### Polygenic Score Loadings Defining the Canonical Genetic Axis
+
+The PGS loadings showed a strong bifurcation, grouping cognitive and educational attainment traits predominantly at the negative end of the axis, and psychiatric, metabolic, and externalizing behaviors at the positive end (Fig. 1b).
+
+#### High-Magnitude Negative Loadings: Cognitive and Educational Predisposition
+
+The negative pole of the canonical mode was dominated by polygenic scores associated with general cognitive capacity and educational achievement. Intelligence (IQeur2) exhibited the strongest loading estimate, at $-0.879$ (95% CI: [$-0.916$, $-0.793$]), demonstrating the primary contribution of this trait to the overall genetic pattern. Closely following in magnitude was cognitive performance (CPeur2), with a loading of $-0.866$ (95% CI: [$-0.908$, $-0.772$]), reinforcing the central role of crystallized and fluid intelligence polygenic risk in this canonical dimension. Educational attainment (EAeur1) also contributed substantially, showing a robust loading of $-0.748$ (95% CI: [$-0.800$, $-0.643$]). These three variables collectively define a highly coherent genetic protective factor axis.
+
+In addition to cognitive metrics, several other behavioral traits also loaded significantly negatively, albeit with smaller magnitudes, suggesting an overlap between protective cognitive factors and lower risk for certain maladaptive behaviors. These included antisocial personality (ASPauto), with a loading of $-0.268$ (95% CI: [$-0.424$, $-0.139$]), cannabis use (CANNABISauto), loading at $-0.137$ (95% CI: [$-0.277$, $-0.073$]), and eating disorder (EDauto), which demonstrated the smallest but still significant negative loading of $-0.036$ (95% CI: [$-0.132$, $-0.004$]).
+
+#### Positive Loadings: Psychiatric, Metabolic, and Externalizing Risk
+
+The positive pole of the canonical mode was characterized by polygenic risk scores for a diverse array of psychiatric, metabolic, and behavioral traits, indicating a shared underlying genetic vulnerability architecture (Fig. 1b). The highest magnitude positive loadings were observed for variables related to somatic and externalizing risk. Body mass index (BMImulti) was the top contributor, loading at $0.325$ (95% CI: [$0.155$, $0.499$]), followed by smoking behavior (SMOKERauto) at $0.286$ (95% CI: [$0.122$, $0.421$]).
+
+Internalizing and major psychiatric disorders formed a prominent cluster. Depression (DEPmulti) showed a loading of $0.181$ (95% CI: [$0.136$, $0.281$]), closely followed by neuroticism (NEUROTICISMauto) at $0.169$ (95% CI: [$0.115$, $0.249$]). Attention Deficit Hyperactivity Disorder (ADHDeur6), a key externalizing phenotype, loaded positively at $0.148$ (95% CI: [$0.089$, $0.261$]). Other significant positive contributors included major depressive disorder (MDDeur6) at $0.106$ (95% CI: [$0.051$, $0.142$]), generalized worry (WORRYauto) at $0.105$ (95% CI: [$0.039$, $0.188$]), and schizophrenia (SCZ\_METAauto) at $0.102$ (95% CI: [$0.017$, $0.149$]). The clustering of these diverse psychiatric and metabolic phenotypes at the positive pole confirms a latent dimension of general polygenic risk antagonistic to the cognitive and educational axis.
+
+### Brain Network Metric Loadings Defining the Canonical Neural Axis
+
+The BNM loadings defined the corresponding structural signature associated with the identified genetic axis (Fig. 1c, Supplementary Table 2). Overall, the canonical mode was primarily driven by alterations in regional connectivity metrics (strength and degree), while global topological measures showed limited contribution.
+
+#### Global Network Properties
+
+We examined four key global metrics of structural network organization. None of the global measures met the threshold for statistical significance (95% CI excluding zero), indicating that the multivariate genetic association primarily impacts specific network nodes rather than whole-brain topological properties. Global density showed a loading of $-0.104$ (95% CI: [$-0.495$, $0.396$]); optimal modularity loaded at $0.092$ (95% CI: [$-0.231$, $0.310$]); and small-worldness loaded at $0.017$ (95% CI: [$-0.206$, $0.188$]). Global efficiency (E:glob) showed a modest positive loading of $0.208$, but its 95% CI ([$0.025$, $0.441$]) narrowly crossed the significance threshold at the lower bound, suggesting a trend towards greater global integration, but not meeting strict statistical criteria.
+
+#### Regional Connectivity Loadings: Strength and Degree
+
+The 185 significant BNMs defined a spatially specific signature, demonstrating a sharp contrast between regional strength metrics (positively loaded) and regional degree metrics (negatively loaded).
+
+**High-Magnitude Positive Loadings: Regional Strength and Subcortical Salience**
+
+The strongest positive loadings, which associate with the psychiatric/metabolic risk PGS axis, were concentrated almost exclusively in regional strength metrics within subcortical and limbic regions. The highest magnitude contributors were observed in the bilateral putamen, demonstrating robust and synchronized involvement. Right-Putamen regional strength showed the maximal BNM loading of $0.647$ (95% CI: [$0.437$, $0.677$]), closely followed by the Left-Putamen regional strength at $0.623$ (95% CI: [$0.420$, $0.665$]).
+
+Limbic and paralimbic structures also demonstrated substantial positive contributions. Right-Hippocampus regional strength loaded at $0.559$ (95% CI: [$0.287$, $0.623$]). The bilateral insula, a key node in the salience network, also exhibited high positive loadings: Left-insula strength was $0.542$ (95% CI: [$0.349$, $0.582$]), and Right-insula strength was $0.528$ (95% CI: [$0.320$, $0.558$]). This pattern indicates that a polygenic predisposition toward psychiatric and metabolic vulnerability is structurally associated with globally stronger connectivity originating from core components of the striatum and limbic circuitry.
+
+**High-Magnitude Negative Loadings: Regional Degree and Temporal Lobe Segregation**
+
+Conversely, the strongest negative loadings, aligning with the cognitive/educational PGS axis, were concentrated in regional degree metrics within the temporal lobe, suggesting that polygenic advantage relates to lower nodal participation or segregation in these areas.
+
+The most robust negative contributions originated from the bilateral temporal poles. Right-temporalpole regional degree loaded significantly at $-0.361$ (95% CI: [$-0.421$, $-0.137$]), and Left-temporalpole regional degree loaded at $-0.329$ (95% CI: [$-0.384$, $-0.116$]). This lateralization pattern was further supported by strong but marginally non-significant negative loadings in other temporal regions, including the Right-superiortemporal degree ($-0.368$, 95% CI: [$-0.540$, $0.003$]), Right-middletemporal degree ($-0.329$, 95% CI: [$-0.505$, $0.044$]), and Left-middletemporal degree ($-0.324$, 95% CI: [$-0.485$, $0.027$]). While the 95% CIs for the middle and superior temporal gyri narrowly overlapped zero, their high magnitude suggests they are anatomically central to the cognitive-related brain signature.
+
+In summary, the dominant canonical mode revealed a strong and specific structural association: a genetic architecture favoring high cognitive function and low risk for mental illness is opposed to a profile of stronger striato-limbic connectivity (strength) but lower overall nodal participation (degree) in key cortical regions, particularly the bilateral temporal poles (Fig. 2, Supplementary Fig. 1).

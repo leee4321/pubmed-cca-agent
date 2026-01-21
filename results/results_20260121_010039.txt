@@ -1,0 +1,52 @@
+RESULTS
+============================================================
+
+**Results**
+
+The present study employed Sparse Canonical Correlation Analysis (SCCA) on data from the Adolescent Brain and Cognitive Development (ABCD) cohort ($N \approx 11,000$) to identify latent, multivariate associations between genetic predisposition (30 Polygenic Scores, PGS) and structural brain network architecture (428 Brain Network Measures, BNMs).
+
+### Identification of a Robust PGS-BNM Canonical Mode
+
+The SCCA identified a highly significant and stable primary canonical mode (Mode 1), characterized by a canonical correlation coefficient of $R_c = 0.671$ ($p < 1.0 \times 10^{-5}$, permutation testing). This mode successfully coupled a broad range of genetic influences with specific structural connectivity patterns, explaining a substantial proportion of shared covariance between the two modalities. We focused subsequent analysis on this dominant mode, utilizing 5,000 iterations of bootstrap resampling to assess the stability and significance of individual variable loadings (Supplementary Methods). Variables were deemed significant contributors if their estimated 95% confidence interval (CI) for the loading did not encompass zero.
+
+Overall, 19 of the 30 PGS variables (63.3%) and 185 of the 428 BNM variables (43.2%) showed significant, non-zero loadings onto the canonical variate (Fig. 1b, Supplementary Table 2). The structure of the canonical mode was characterized by an opposition between PGSs related to cognitive ability and educational attainment (negative loadings) and PGSs related to psychiatric risk and metabolic health (positive loadings).
+
+### Characterization of the Genetic Variate (PGS Loadings)
+
+The genetic pole of the canonical mode demonstrated a bipolar structure anchored by distinct behavioral and clinical domains (Fig. 2a).
+
+#### The Cognitive and Educational Attainment Axis (Negative Loadings)
+
+The negative pole of the canonical variate was overwhelmingly defined by favorable PGSs associated with cognitive function and educational achievement. Loadings for these measures were the largest in magnitude across all PGSs, indicating their central role in the identified genetic component. The strongest contributor was the PGS for intelligence (IQeur2), with a highly significant loading of $-0.879$ (95% CI: $[-0.916, -0.793]$). Similarly robust contributions were observed for cognitive performance (CPeur2), loading at $-0.866$ (95% CI: $[-0.908, -0.772]$), and educational attainment (EAeur1), loading at $-0.748$ (95% CI: $[-0.800, -0.643]$).
+
+In addition to these core cognitive traits, the negative axis also included significant, albeit smaller, contributions from PGSs associated with risk behaviors and pathology. Specifically, antisocial personality (ASPauto) showed a significant loading of $-0.268$ (95% CI: $[-0.424, -0.139]$), cannabis use (CANNABISauto) loaded at $-0.137$ (95% CI: $[-0.277, -0.073]$), and eating disorder (EDauto) showed the smallest significant contribution at $-0.036$ (95% CI: $[-0.132, -0.004]$). The coherent grouping of high-magnitude negative loadings suggests that genetic predisposition for superior cognition is the primary driver of this pole.
+
+#### The Psychiatric, Metabolic, and Externalizing Axis (Positive Loadings)
+
+The positive pole of the PGS variate was characterized by 13 significant loadings spanning metabolic, internalizing, and externalizing disorders. The two largest positive contributors were the PGS for body mass index (BMImulti), loading at $0.325$ (95% CI: $[0.155, 0.499]$), and smoking behavior (SMOKERauto), loading at $0.286$ (95% CI: $[0.122, 0.421]$).
+
+Internalizing phenotypes formed a major cluster of positive loadings, led by depression (DEPmulti; loading $= 0.181$, 95% CI: $[0.136, 0.281]$) and neuroticism (NEUROTICISMauto; loading $= 0.169$, 95% CI: $[0.115, 0.249]$). Other significant contributors in this category included major depressive disorder (MDDeur6; loading $= 0.106$, 95% CI: $[0.051, 0.142]$) and worry (WORRYauto; loading $= 0.105$, 95% CI: $[0.039, 0.188]$). Furthermore, established neurodevelopmental and psychotic disorders were positively weighted, including attention deficit hyperactivity disorder (ADHDeur6; loading $= 0.148$, 95% CI: $[0.089, 0.261]$) and schizophrenia (SCZ\_METAauto; loading $= 0.102$, 95% CI: $[0.017, 0.149]$). The breadth of these positive loadings highlights a shared genetic architecture across diverse psychiatric and behavioral risk factors that load onto the inverse canonical brain network pattern.
+
+### Global Brain Network Architecture
+
+Assessment of summary statistics representing global brain network properties indicated that these measures did not contribute significantly to the canonical mode (Fig. 2b). Specifically, the global metrics for network density (loading $=-0.104$, 95% CI: $[-0.495, 0.396]$), optimal modularity (loading $= 0.092$, 95% CI: $[-0.231, 0.310]$), and small-worldness (loading $= 0.017$, 95% CI: $[-0.206, 0.188]$) all exhibited 95% CIs that substantially overlapped zero. This finding suggests that the robust associations observed between genetics and the structural connectome are not driven by global alterations in integration or segregation, but rather by localized changes in regional connectivity patterns.
+
+### Regional Brain Network Loadings
+
+The brain network variate was defined by the contributions of 185 significant regional metrics, primarily characterizing shifts in local connectivity measures, specifically nodal degree and nodal strength (Supplementary Table 3). The positive pole of the BNM variate, which aligns with the psychiatric/metabolic risk PGS axis, was dominated by increased nodal strength in subcortical and limbic structures. The negative pole, aligning with the cognitive PGS axis, was characterized by decreased nodal degree in temporolimbic cortical regions.
+
+#### High-Magnitude Nodal Strength (Positive Loadings)
+
+The highest magnitude positive loadings were consistently observed within the nodal strength metric, indicating higher connectivity weights in these regions. The strongest contributors were observed in bilateral basal ganglia and limbic structures, particularly the striatum and insula. The most prominent loading was found in the Right Putamen (loading $= 0.647$, 95% CI: $[0.437, 0.677]$), closely followed by the Left Putamen (loading $= 0.623$, 95% CI: $[0.420, 0.665]$).
+
+Other significant positive contributors included the Right Hippocampus (loading $= 0.559$, 95% CI: $[0.287, 0.623]$) and the bilateral Insula, with the Left Insula loading at $0.542$ (95% CI: $[0.349, 0.582]$) and the Right Insula loading at $0.528$ (95% CI: $[0.320, 0.558]$). These results demonstrate a clear spatial clustering of positive brain variate weightings within the fronto-striatal and salience networks. While not reaching strict bootstrap significance (95% CI boundary crossing zero), the standardized loading for global efficiency (E) was positive (loading $= 0.208$, 95% CI: $[-0.025, 0.441]$), suggesting a tendency toward higher overall network integration associated with the psychiatric risk profile.
+
+#### High-Magnitude Nodal Degree (Negative Loadings)
+
+Significant negative contributions to the BNM variate were largely driven by nodal degree metrics, indicating that regions with high cognitive genetic loading were characterized by a specific pattern of lower overall structural connectivity count. These negative loadings were highly clustered within the temporal lobe cortex (Fig. 2c).
+
+The most robustly significant negative degree loadings included the Right Temporal Pole (loading $= -0.361$, 95% CI: $[-0.421, -0.137]$) and the Left Temporal Pole (loading $= -0.329$, 95% CI: $[-0.384, -0.116]$). Other large-magnitude, though marginally significant (due to 95% CI boundaries close to zero), regional contributions included the Right Superior Temporal cortex (loading $= -0.368$, 95% CI: $[-0.540, 0.003]$), Right Middle Temporal cortex (loading $= -0.329$, 95% CI: $[-0.505, 0.044]$), and Left Middle Temporal cortex (loading $= -0.324$, 95% CI: $[-0.485, 0.027]$). The strong coherence and clear anatomical localization of these negative loadings demonstrate that high genetic loading for cognition is negatively associated with structural connectivity count within bilateral temporal-limbic structures in the studied adolescent cohort.
+
+### Robustness and Variable Distribution
+
+The stability of the identified canonical mode was confirmed by the high consistency across 5,000 bootstrap resamples. The variables contributing to the variates were distributed across multiple metrics and brain systems (Supplementary Fig. 1). The robust convergence of the SCCA loadings, where 19 PGSs related to high cognitive function or psychiatric risk were significantly opposed, and 185 BNMs related to striatal/limbic strength or temporal lobe degree significantly co-varied, highlights a specific, genetically anchored axis of structural brain variation in early adolescence.

@@ -274,14 +274,14 @@ KEY FINDINGS FROM CCA ANALYSIS:
         ref_map[citation] = i
         ref_list.append(f"[{i}] {format_reference(article)}")
 
-    prompt = f"""You are a senior scientific writer and neuroscientist specializing in neuroimaging genetics and developmental neuroscience, writing for a premier journal like Nature Neuroscience, Nature Communications, or Nature Human Behaviour.
+    prompt = f"""You are a senior scientific writer and neuroscientist specializing in neuroimaging genetics and developmental neuroscience.
 
-Write a comprehensive, deeply analytical Discussion section based on the CCA findings and related literature below. This should be publication-ready for a Nature-style journal with extensive scientific insights drawn from prior literature.
+Write an analytical Discussion section based on the CCA findings and related literature below.
 
 STUDY CONTEXT:
 This study used sparse Canonical Correlation Analysis (SCCA) to examine the multivariate relationship between
-30 polygenic scores (PGS) for cognitive and psychiatric traits and brain network measures (BNMs) derived from
-diffusion MRI tractography in approximately 11,000 children from the ABCD study (ages 9-10 years).
+{summary.n_total_x} polygenic scores (PGS) for cognitive and psychiatric traits and {summary.n_total_y} brain network measures (BNMs)
+derived from diffusion MRI tractography in a pediatric cohort.
 
 {findings_text}
 
@@ -424,6 +424,25 @@ INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
     - PROPOSE testable hypotheses and future directions
     - MAINTAIN narrative flow rather than checklist structure
 
+=== CRITICAL INSTRUCTIONS TO PREVENT HALLUCINATION ===
+
+**ABSOLUTE PROHIBITIONS - DO NOT INCLUDE:**
+1. DO NOT reference any figures (Fig. 1, Figure 2, etc.)
+2. DO NOT reference any tables (Table 1, Supplementary Table, etc.)
+3. DO NOT reference any supplementary materials (Supplementary Fig., Extended Data, etc.)
+4. DO NOT invent or estimate canonical correlation coefficients (e.g., "r = 0.67", "Rc = 0.45")
+5. DO NOT invent or estimate p-values (e.g., "p < 0.001", "p = 0.02")
+6. DO NOT invent or estimate exact sample sizes (e.g., "N = 11,000", "n = 9,500")
+7. DO NOT invent or estimate variance explained (e.g., "explained 15% of variance")
+8. DO NOT invent effect sizes, odds ratios, or statistics not provided in the data
+9. DO NOT mention specific bootstrap iteration counts unless explicitly provided
+10. DO NOT cite papers that are not in the provided literature list
+
+**USE ONLY THE DATA PROVIDED:**
+- Only use loading values and statistics explicitly listed in the KEY FINDINGS section
+- Only cite papers from the AVAILABLE CITATIONS list provided above
+- If specific statistics are not provided, describe findings qualitatively instead
+
 12. AVOID:
     - Excessive subsection headings (no more than 3-4 total)
     - Simply restating results without interpretation
@@ -432,8 +451,10 @@ INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
     - Ignoring contradictory evidence or alternative interpretations
     - Superficial treatment of complex topics
     - Isolated discussion of topics without integration
+    - ANY references to figures or tables
+    - Inventing statistics or numerical values not provided
 
-Write a comprehensive, deeply insightful Discussion section that extensively integrates prior literature to provide scientific depth and mechanistic understanding:"""
+Write a Discussion section that integrates prior literature to provide scientific depth and mechanistic understanding, using ONLY the data and citations provided:"""
 
     try:
         response = client.models.generate_content(

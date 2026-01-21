@@ -257,18 +257,17 @@ def generate_results_with_llm(
         for abbrev, full_name, est, ci_low, ci_high in regions[:5]:
             regional_text += f"  - {full_name}: loading={est:.3f}, 95% CI=[{ci_low:.3f}, {ci_high:.3f}]\n"
 
-    prompt = f"""You are a senior scientific writer specializing in neuroimaging genetics research, writing for a high-impact journal like Nature Neuroscience or Nature Communications.
+    prompt = f"""You are a senior scientific writer specializing in neuroimaging genetics research.
 
-Write a comprehensive, detailed Results section based on the sparse Canonical Correlation Analysis (SCCA) findings below. This should be publication-ready for a Nature-style journal.
+Write a Results section based on the sparse Canonical Correlation Analysis (SCCA) findings below.
 
 CONTEXT FROM INTRODUCTION:
 {intro_summary}
 
-METHODS SUMMARY:
-The study used sparse CCA to identify multivariate associations between {summary.n_total_x} polygenic scores (PGS)
-and {summary.n_total_y} brain network measures (BNMs) in the ABCD dataset (N=~11,000 children, ages 9-10 years). 
-Bootstrap resampling (5,000 iterations) was used to estimate 95% confidence intervals. Variables are considered 
-significant if their 95% CI does not cross zero.
+ANALYSIS OVERVIEW:
+Sparse CCA was used to identify multivariate associations between {summary.n_total_x} polygenic scores (PGS)
+and {summary.n_total_y} brain network measures (BNMs). Bootstrap resampling was used to estimate 95% confidence
+intervals. Variables are considered significant if their 95% CI does not cross zero.
 
 KEY FINDINGS:
 
@@ -290,76 +289,59 @@ SUMMARY STATISTICS:
 - Total BNM variables analyzed: {summary.n_total_y}
 - Significant BNM variables (95% CI): {summary.n_significant_y} ({summary.n_significant_y}/{summary.n_total_y} = {100*summary.n_significant_y/summary.n_total_y:.1f}%)
 
-INSTRUCTIONS FOR NATURE-STYLE RESULTS SECTION:
+=== CRITICAL INSTRUCTIONS TO PREVENT HALLUCINATION ===
 
-1. STRUCTURE AND LENGTH:
-   - Write 8-12 paragraphs organized into clear subsections
-   - Target length: 1,500-2,500 words
-   - Use descriptive subheadings (e.g., "Identification of a robust PGS-BNM canonical mode", "Cognitive and psychiatric PGS loadings", "Regional brain network architecture")
+**ABSOLUTE PROHIBITIONS - DO NOT INCLUDE:**
+1. DO NOT reference any figures (Fig. 1, Figure 2, etc.)
+2. DO NOT reference any tables (Table 1, Supplementary Table, etc.)
+3. DO NOT reference any supplementary materials
+4. DO NOT invent or estimate canonical correlation coefficients (e.g., "r = 0.67")
+5. DO NOT invent or estimate p-values (e.g., "p < 0.001")
+6. DO NOT invent or estimate sample sizes (e.g., "N = 11,000")
+7. DO NOT invent or estimate variance explained (e.g., "explained 15% of variance")
+8. DO NOT invent or estimate effect sizes not provided in the data
+9. DO NOT mention bootstrap iteration counts unless explicitly provided
+10. DO NOT include any citations or references
+
+**USE ONLY THE DATA PROVIDED ABOVE:**
+- Only report loading values and 95% CIs that are explicitly listed above
+- Only use the count statistics provided (e.g., {summary.n_significant_x}/{summary.n_total_x} PGS significant)
+- If a specific statistic is not provided, do NOT estimate or infer it
+
+**WRITING GUIDELINES:**
+
+1. STRUCTURE:
+   - Write 6-10 paragraphs organized into clear subsections
+   - Use descriptive subheadings
 
 2. OPENING PARAGRAPH:
-   - Provide a comprehensive overview of the main finding
-   - State the canonical correlation coefficient and its statistical significance
-   - Mention the proportion of variance explained
-   - Describe the overall pattern (cognitive vs psychiatric axis)
+   - Describe that a canonical mode linking PGS and BNM was identified
+   - State the number of significant variables on each side
+   - Describe the overall pattern (cognitive vs psychiatric axis) based on the loading directions
+   - DO NOT report any correlation coefficient or p-value
 
 3. POLYGENIC SCORE LOADINGS (2-3 paragraphs):
-   - Create a detailed subsection describing PGS loadings
-   - For NEGATIVE loadings (cognitive traits):
-     * List ALL significant PGS with exact loading values and 95% CIs
-     * Describe the magnitude hierarchy (strongest to weakest)
-     * Note the coherence of cognitive/educational traits clustering together
-   - For POSITIVE loadings (psychiatric/metabolic traits):
-     * List ALL significant PGS with exact loading values and 95% CIs
-     * Group by trait category (internalizing, externalizing, metabolic)
-     * Highlight the diversity of psychiatric phenotypes involved
-   - Include specific numerical details for at least the top 10 contributors in each direction
+   - Report ALL significant PGS with their exact loading values and 95% CIs as provided
+   - Group negative loadings (typically cognitive traits) and positive loadings (typically psychiatric/metabolic)
+   - Use only the exact numbers provided above
 
-4. BRAIN NETWORK METRICS (3-4 paragraphs):
-   - Create subsections for different metric types (global vs regional, strength vs degree, etc.)
-   - For GLOBAL metrics:
-     * Report all global network metrics tested, even non-significant ones
-     * Explain why global metrics did not reach significance
-   - For REGIONAL metrics:
-     * Organize by anatomical systems (subcortical, cortical, by lobe)
-     * Report the top 15-20 regions with highest loading magnitudes
-     * Include both positive and negative contributors
-     * Specify exact brain regions with full anatomical names
-     * Note any lateralization patterns (left vs right hemisphere)
-     * Describe spatial clustering or distributed patterns
+4. BRAIN NETWORK METRICS (2-3 paragraphs):
+   - Report global metrics with their exact values and CIs
+   - State whether each metric is significant (CI excludes zero) or not
+   - Report regional metrics with their exact values
+   - Note anatomical patterns (subcortical, cortical, lateralization) based on the data
 
-5. STATISTICAL RIGOR:
-   - Always report: loading estimate, 95% CI lower bound, 95% CI upper bound
-   - Use precise language: "significantly different from zero", "95% confidence interval"
-   - Report effect sizes and standardized coefficients
-   - Mention bootstrap stability if available
+5. STATISTICAL REPORTING:
+   - Always use the exact format: loading = X.XXX (95% CI: [X.XXX, X.XXX])
+   - Clearly state whether each variable is significant based on CI crossing zero
+   - Use only the numbers provided - do not round differently or modify values
 
-6. QUANTITATIVE DETAILS:
-   - Include specific numbers for all major findings
-   - Use tables/figure references (e.g., "Fig. 1a", "Table 1", "Supplementary Table 2")
-   - Provide ranges and distributions, not just point estimates
-   - Report percentages and proportions where relevant
+6. WRITING STYLE:
+   - Use past tense ("was", "showed", "demonstrated")
+   - Be objective and descriptive
+   - DO NOT interpret findings (save for Discussion)
 
-7. WRITING STYLE:
-   - Use past tense consistently ("was", "showed", "demonstrated")
-   - Be objective and descriptive, avoid interpretation
-   - Use technical precision (e.g., "bilateral putamen", "fronto-striatal connectivity")
-   - Employ Nature's formal but clear writing style
-   - Use transition sentences between paragraphs for flow
-
-8. ADDITIONAL ELEMENTS:
-   - Mention supplementary materials where appropriate
-   - Note any sensitivity analyses or robustness checks
-   - Describe the spatial distribution of findings
-   - Include any relevant demographic or sample characteristics
-
-9. AVOID:
-   - Do NOT include citations or references
-   - Do NOT interpret findings (save for Discussion)
-   - Do NOT use vague language ("some regions", "several traits")
-   - Do NOT omit statistical details
-
-Write a comprehensive, Nature-quality Results section following these guidelines:"""
+Write the Results section now, using ONLY the data provided above:"""
 
     try:
         response = client.models.generate_content(

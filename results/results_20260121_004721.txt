@@ -1,0 +1,22 @@
+RESULTS
+============================================================
+
+**Results**
+
+### Canonical Correlation Analysis of Polygenic Scores and Brain Network Metrics
+
+Sparse Canonical Correlation Analysis (SCCA) was performed to identify the multivariate relationship between 30 polygenic scores (PGS) and 428 brain network metrics (BNMs). A single, statistically robust canonical mode was identified that significantly correlated the two data modalities. Based on bootstrap resampling (5,000 iterations), this mode successfully retained 19 of the 30 PGS variables and 185 of the 428 BNM variables, defined by their 95% confidence intervals (CIs) not crossing zero.
+
+#### Polygenic Score (PGS) Loadings
+
+The canonical mode revealed a highly structured pattern of genetic influences, contrasting cognitive/educational traits with psychiatric/metabolic traits. Variables associated with high cognitive function and educational attainment exhibited the largest magnitude negative loadings on the canonical axis. The strongest contributors were the PGS for intelligence (loading = -0.879, 95% CI=[-0.916, -0.793]), cognitive performance (loading = -0.866, 95% CI=[-0.908, -0.772]), and educational attainment (loading = -0.748, 95% CI=[-0.800, -0.643]). Other significant negative loadings included antisocial personality (loading = -0.268, 95% CI=[-0.424, -0.139]) and cannabis use (loading = -0.137, 95% CI=[-0.277, -0.073]).
+
+Conversely, PGS linked to increased risk for psychiatric disorders and adverse metabolic outcomes demonstrated positive loadings. The strongest positive contributors included body mass index (loading = 0.325, 95% CI=[0.155, 0.499]) and smoking behavior (loading = 0.286, 95% CI=[0.122, 0.421]). Several indices of internalizing symptomatology also loaded positively, including depression (loading = 0.181, 95% CI=[0.136, 0.281]), neuroticism (loading = 0.169, 95% CI=[0.115, 0.249]), and worry (loading = 0.105, 95% CI=[0.039, 0.188]). Established psychiatric disorders, such as ADHD (loading = 0.148, 95% CI=[0.089, 0.261]) and schizophrenia (loading = 0.102, 95% CI=[0.017, 0.149]), also exhibited significant positive contributions.
+
+#### Brain Network Metric (BNM) Loadings
+
+The BNM component was driven entirely by regional properties, as global network metrics did not reach statistical significance. Specifically, the CIs for network density (loading = -0.104, 95% CI=[-0.495, 0.396]), optimal modularity (loading = 0.092, 95% CI=[-0.231, 0.310]), and small-worldness (loading = 0.017, 95% CI=[-0.206, 0.188]) all crossed zero.
+
+The positive end of the BNM canonical axis was dominated by measures of regional network strength, particularly within subcortical and paralimbic regions. The highest magnitude loadings were observed for the strength metrics of the Right Putamen (loading = 0.647, 95% CI=[0.437, 0.677]) and Left Putamen (loading = 0.623, 95% CI=[0.420, 0.665]). Strong positive contributions were also evident from the Right Hippocampus strength (loading = 0.559, 95% CI=[0.287, 0.623]) and bilateral insular strength (Left Insula: loading = 0.542, 95% CI=[0.349, 0.582]; Right Insula: loading = 0.528, 95% CI=[0.320, 0.558]).
+
+Conversely, the negative end of the BNM axis was characterized by decreased regional degree centrality, largely localized to the temporal lobe. Significant negative loadings were observed for regional degree measures in the Right Temporal Pole (loading = -0.361, 95% CI=[-0.421, -0.137]) and Left Temporal Pole (loading = -0.329, 95% CI=[-0.384, -0.116]). While other neighboring temporal regions showed large negative point estimates (e.g., Right Superior Temporal degree, loading = -0.368; Left Middle Temporal degree, loading = -0.324), their 95% CIs marginally included zero, meaning the temporal pole regions provided the most statistically robust negative contributions to the canonical mode.
