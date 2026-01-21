@@ -36,7 +36,13 @@ def check_genai_key():
 
 
 def generate_paper_sections(
-    base_dir: str = "input",
+    base_dir: Optional[str] = None,
+    x_loading_path: Optional[str] = None,
+    y_loading_path: Optional[str] = None,
+    freesurfer_label_path: Optional[str] = None,
+    analysis_desc_path: Optional[str] = None,
+    introduction_path: Optional[str] = None,
+    methods_path: Optional[str] = None,
     output_dir: str = "results",
     use_llm: bool = True,
     search_literature: bool = True,
@@ -47,6 +53,12 @@ def generate_paper_sections(
 
     Args:
         base_dir: Directory containing input data files (default: input)
+        x_loading_path: Path to X loading CSV (overrides base_dir)
+        y_loading_path: Path to Y loading CSV (overrides base_dir)
+        freesurfer_label_path: Path to FreeSurfer labels CSV (overrides base_dir)
+        analysis_desc_path: Path to analysis description (overrides base_dir)
+        introduction_path: Optional path to Introduction text file
+        methods_path: Optional path to Methods text file
         output_dir: Directory to save output files (default: results)
         use_llm: Whether to use LLM for generation
         search_literature: Whether to search PubMed for prior literature
@@ -66,7 +78,37 @@ def generate_paper_sections(
         print("Loading CCA Results...")
         print("=" * 60)
 
-    cca_results = load_default_cca_results(base_dir)
+    # Check if individual files are specified
+    if all([x_loading_path, y_loading_path, freesurfer_label_path, analysis_desc_path]):
+        # Load from individual files
+        if verbose:
+            print("  Loading from specified files:")
+            print(f"    X loading: {x_loading_path}")
+            print(f"    Y loading: {y_loading_path}")
+            print(f"    FreeSurfer labels: {freesurfer_label_path}")
+            print(f"    Analysis description: {analysis_desc_path}")
+            if introduction_path:
+                print(f"    Introduction: {introduction_path}")
+            if methods_path:
+                print(f"    Methods: {methods_path}")
+        
+        cca_results = load_cca_results(
+            x_loading_path=x_loading_path,
+            y_loading_path=y_loading_path,
+            freesurfer_label_path=freesurfer_label_path,
+            analysis_description_path=analysis_desc_path,
+            introduction_path=introduction_path,
+            methods_path=methods_path
+        )
+    else:
+        # Load from default directory
+        if base_dir is None:
+            base_dir = "input"
+        
+        if verbose:
+            print(f"  Loading from directory: {base_dir}")
+        
+        cca_results = load_default_cca_results(base_dir)
 
     if verbose:
         print(f"  - Loaded {len(cca_results.x_loadings)} X loadings (PGS)")
@@ -89,7 +131,7 @@ def generate_paper_sections(
     results_text = generate_results_section(
         cca_results=cca_results,
         use_llm=use_llm,
-        base_dir=base_dir
+        base_dir=base_dir if base_dir else "."
     )
 
     # Generate Discussion section
@@ -103,7 +145,7 @@ def generate_paper_sections(
         summary=summary,
         gather_literature=search_literature,
         verbose=verbose,
-        base_dir=base_dir
+        base_dir=base_dir if base_dir else "."
     )
 
     return results_text, discussion_text, references
@@ -236,8 +278,65 @@ def interactive_mode():
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description='PubMed CCA Agent - Generate paper sections from CCA results'
+        description='PubMed CCA Agent - Generate paper sections from CCA results',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Use default input directory
+  python agent.py --mode generate
+
+  # Specify individual CCA files (required)
+  python agent.py --mode generate \\
+    --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \\
+    --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \\
+    --freesurfer-labels input/FreeSurfer_label.csv \\
+    --analysis-desc input/analysis_results_description.txt
+
+  # With optional introduction and methods
+  python agent.py --mode generate \\
+    --x-loading input/x_loading.csv \\
+    --y-loading input/y_loading.csv \\
+    --freesurfer-labels input/labels.csv \\
+    --analysis-desc input/description.txt \\
+    --introduction input/intro.txt \\
+    --methods input/methods.txt
+        """
     )
+    
+    # Input file specification (alternative to --input-dir)
+    input_group = parser.add_argument_group('Individual file specification (overrides --input-dir)')
+    input_group.add_argument(
+        '--x-loading',
+        type=str,
+        help='Path to X loading bootstrap results CSV file (required if not using --input-dir)'
+    )
+    input_group.add_argument(
+        '--y-loading',
+        type=str,
+        help='Path to Y loading bootstrap results CSV file (required if not using --input-dir)'
+    )
+    input_group.add_argument(
+        '--freesurfer-labels',
+        type=str,
+        help='Path to FreeSurfer labels CSV file (required if not using --input-dir)'
+    )
+    input_group.add_argument(
+        '--analysis-desc',
+        type=str,
+        help='Path to analysis description text file (required if not using --input-dir)'
+    )
+    input_group.add_argument(
+        '--introduction',
+        type=str,
+        help='Path to Introduction text file (optional)'
+    )
+    input_group.add_argument(
+        '--methods',
+        type=str,
+        help='Path to Methods text file (optional)'
+    )
+    
+    # General options
     parser.add_argument(
         '--mode', '-m',
         choices=['generate', 'interactive', 'results', 'discussion'],
@@ -247,7 +346,7 @@ def main():
     parser.add_argument(
         '--input-dir', '-i',
         default='input',
-        help='Directory containing input data files (default: input)'
+        help='Directory containing input data files (default: input). Ignored if individual files are specified.'
     )
     parser.add_argument(
         '--output-dir', '-o',
@@ -271,13 +370,40 @@ def main():
     )
 
     args = parser.parse_args()
+    
+    # Validate individual file arguments
+    individual_files_specified = any([
+        args.x_loading, args.y_loading, 
+        args.freesurfer_labels, args.analysis_desc
+    ])
+    
+    if individual_files_specified:
+        # If any individual file is specified, all required files must be specified
+        required_files = {
+            '--x-loading': args.x_loading,
+            '--y-loading': args.y_loading,
+            '--freesurfer-labels': args.freesurfer_labels,
+            '--analysis-desc': args.analysis_desc
+        }
+        
+        missing_files = [name for name, path in required_files.items() if not path]
+        
+        if missing_files:
+            parser.error(f"When specifying individual files, all required files must be provided. "
+                        f"Missing: {', '.join(missing_files)}")
 
     if args.mode == 'interactive':
         interactive_mode()
 
     elif args.mode == 'generate':
         results, discussion, refs = generate_paper_sections(
-            base_dir=args.input_dir,
+            base_dir=args.input_dir if not individual_files_specified else None,
+            x_loading_path=args.x_loading,
+            y_loading_path=args.y_loading,
+            freesurfer_label_path=args.freesurfer_labels,
+            analysis_desc_path=args.analysis_desc,
+            introduction_path=args.introduction,
+            methods_path=args.methods,
             output_dir=args.output_dir,
             use_llm=not args.no_llm,
             search_literature=not args.no_literature,

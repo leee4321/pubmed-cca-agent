@@ -27,5 +27,23 @@ python --version
 pip install -r requirements.txt
 
 # 4. Run the Agent to generate results and discussion
-# This will use the input/ folder and save to results/ folder
+# 
+# OPTION 1: Use default input directory (recommended for standard setup)
+# This will use all files from the input/ folder
 python agent.py --mode generate
+
+# OPTION 2: Specify individual CCA files (for custom datasets)
+# Uncomment and modify the following to use specific files:
+#
+# python agent.py --mode generate \
+#   --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
+#   --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
+#   --freesurfer-labels input/FreeSurfer_label.csv \
+#   --analysis-desc input/analysis_results_description.txt \
+#   --introduction input/Introduction.txt \
+#   --methods input/Methods.txt \
+#   --output-dir results
+#
+# Note: When using individual files, all 4 required files must be specified:
+#   --x-loading, --y-loading, --freesurfer-labels, --analysis-desc
+# Optional files: --introduction, --methods
