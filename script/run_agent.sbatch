@@ -27,23 +27,18 @@ python --version
 pip install -r requirements.txt
 
 # 4. Run the Agent to generate results and discussion
-# 
-# OPTION 1: Use default input directory (recommended for standard setup)
-# This will use all files from the input/ folder
-python agent.py --mode generate
+# 4. Run the Agent to generate results, discussion, and figures
+# Note: Providing all input files explicitly is now required.
+echo "Starting PubMed CCA Agent..."
 
-# OPTION 2: Specify individual CCA files (for custom datasets)
-# Uncomment and modify the following to use specific files:
-#
-# python agent.py --mode generate \
-#   --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
-#   --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
-#   --freesurfer-labels input/FreeSurfer_label.csv \
-#   --analysis-desc input/analysis_results_description.txt \
-#   --introduction input/Introduction.txt \
-#   --methods input/Methods.txt \
-#   --output-dir results
-#
-# Note: When using individual files, all 4 required files must be specified:
-#   --x-loading, --y-loading, --freesurfer-labels, --analysis-desc
-# Optional files: --introduction, --methods
+python agent.py --mode generate \
+  --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
+  --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
+  --freesurfer-labels input/FreeSurfer_label.csv \
+  --analysis-desc input/analysis_results_description.txt \
+  --introduction input/Introduction.txt \
+  --methods input/Methods.txt \
+  --generate-figures \
+  --output-dir results
+
+echo "Agent execution completed. Check 'results' directory for outputs."
