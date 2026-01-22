@@ -30,7 +30,7 @@ from pubmed_tool import PubMedArticle, format_citation, format_reference
 class FactChecker:
     """Fact-checking agent that verifies claims in discussion text against cited abstracts."""
     
-    def __init__(self, model_name: str = 'gemini-flash-latest'):
+    def __init__(self, model_name: str = 'gemini-2.5-flash'):
         """
         Initialize the FactChecker.
         
