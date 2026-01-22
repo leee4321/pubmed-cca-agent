@@ -197,6 +197,8 @@ def plot_top_variables(
     plt.close()
     print(f"Saved plot to {output_path}")
 
+from datetime import datetime
+
 def generate_figures(
     x_loading_path: str,
     y_loading_path: str,
@@ -206,10 +208,12 @@ def generate_figures(
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
     # 1. Plot PGS (X Loadings)
     plot_top_variables(
         x_loading_path, 
-        os.path.join(output_dir, 'figure_1_pgs_loadings.png'),
+        os.path.join(output_dir, f'figure_1_pgs_loadings_{timestamp}.png'),
         "Top Polygenic Score (PGS) Loadings",
         top_n=20,
         variable_type="PGS"
@@ -219,7 +223,7 @@ def generate_figures(
     # We stick to bar plots for robustness as discussed
     plot_top_variables(
         y_loading_path,
-        os.path.join(output_dir, 'figure_2_brain_loadings.png'),
+        os.path.join(output_dir, f'figure_2_brain_loadings_{timestamp}.png'),
         "Top Brain Network Measure (BNM) Loadings",
         top_n=20,
         variable_type="Brain"
