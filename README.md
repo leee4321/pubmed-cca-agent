@@ -34,16 +34,32 @@ pubmed_cca_agent/
 
 ## Input Files Required
 
+### Option 1: Default Directory Structure (Recommended)
+
 Place the following files in the `input/` directory:
 
-| File | Description |
-|------|-------------|
-| `bootstrap_result_summary_x_loading_comp1.csv` | X loadings (PGS) with bootstrap CIs |
-| `bootstrap_result_summary_y_loading_comp1.csv` | Y loadings (BNM) with bootstrap CIs |
-| `FreeSurfer_label.csv` | Brain region abbreviation to full name mapping |
-| `analysis_results_description.txt` | Description of the CCA analysis |
-| `Introduction.txt` | Paper introduction text (for context) |
-| `Methods.txt` | Paper methods text (for context) |
+| File | Required | Description |
+|------|----------|-------------|
+| `bootstrap_result_summary_x_loading_comp1.csv` | ✅ Yes | X loadings (PGS) with bootstrap CIs |
+| `bootstrap_result_summary_y_loading_comp1.csv` | ✅ Yes | Y loadings (BNM) with bootstrap CIs |
+| `FreeSurfer_label.csv` | ✅ Yes | Brain region abbreviation to full name mapping |
+| `analysis_results_description.txt` | ✅ Yes | Description of the CCA analysis |
+| `Introduction.txt` | ⭕ Optional | Paper introduction text (for context) |
+| `Methods.txt` | ⭕ Optional | Paper methods text (for context) |
+
+### Option 2: Individual File Specification
+
+You can specify individual files using command-line arguments instead of using the default directory structure. This is useful for custom datasets or different file naming conventions.
+
+**Required arguments** (all 4 must be provided together):
+- `--x-loading`: Path to X loading CSV file
+- `--y-loading`: Path to Y loading CSV file
+- `--freesurfer-labels`: Path to FreeSurfer labels CSV file
+- `--analysis-desc`: Path to analysis description text file
+
+**Optional arguments**:
+- `--introduction`: Path to Introduction text file
+- `--methods`: Path to Methods text file
 
 ## Setup
 
@@ -68,48 +84,100 @@ Place the following files in the `input/` directory:
 
 ## Usage
 
-### Generate Both Results and Discussion
+### Basic Usage (Default Directory)
+
+Generate both Results and Discussion using files from `input/` directory:
 ```bash
 python agent.py --mode generate
 ```
 
-### Generate Only Results Section
+### Individual File Specification
+
+Specify custom CCA result files:
+```bash
+# Required files only
+python agent.py --mode generate \
+  --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
+  --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
+  --freesurfer-labels input/FreeSurfer_label.csv \
+  --analysis-desc input/analysis_results_description.txt
+
+# With optional introduction and methods
+python agent.py --mode generate \
+  --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
+  --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
+  --freesurfer-labels input/FreeSurfer_label.csv \
+  --analysis-desc input/analysis_results_description.txt \
+  --introduction input/Introduction.txt \
+  --methods input/Methods.txt
+
+# Custom dataset with different file names
+python agent.py --mode generate \
+  --x-loading data/my_x_loadings.csv \
+  --y-loading data/my_y_loadings.csv \
+  --freesurfer-labels data/brain_labels.csv \
+  --analysis-desc data/description.txt \
+  --output-dir custom_results
+```
+
+### Other Modes
+
+Generate only Results section:
 ```bash
 python agent.py --mode results
 ```
 
-### Generate Only Discussion Section
+Generate only Discussion section:
 ```bash
 python agent.py --mode discussion
 ```
 
-### Interactive Mode
+Interactive mode:
 ```bash
 python agent.py --mode interactive
 ```
 
 ### Command Line Options
+
 ```
-Options:
-  --mode, -m        Operation mode: generate, interactive, results, discussion
-  --input-dir, -i   Directory containing input data files (default: input)
-  --output-dir, -o  Directory to save output files (default: results)
-  --no-llm          Disable LLM, use rule-based generation only
-  --no-literature   Skip PubMed literature search
-  --quiet, -q       Suppress progress output
+General Options:
+  --mode, -m              Operation mode: generate, interactive, results, discussion
+  --input-dir, -i         Directory containing input data files (default: input)
+                          Ignored if individual files are specified
+  --output-dir, -o        Directory to save output files (default: results)
+  --no-llm                Disable LLM, use rule-based generation only
+  --no-literature         Skip PubMed literature search
+  --quiet, -q             Suppress progress output
+
+Individual File Specification (overrides --input-dir):
+  --x-loading             Path to X loading CSV (required with other CCA files)
+  --y-loading             Path to Y loading CSV (required with other CCA files)
+  --freesurfer-labels     Path to FreeSurfer labels CSV (required with other CCA files)
+  --analysis-desc         Path to analysis description (required with other CCA files)
+  --introduction          Path to Introduction text (optional)
+  --methods               Path to Methods text (optional)
 ```
 
-### Examples
+### Additional Examples
 
 ```bash
 # Full generation with custom directories
 python agent.py -m generate -i ./data -o ./results
 
-# Quick results without PubMed search
+# Quick results without PubMed search (faster)
 python agent.py -m generate --no-literature
 
 # Rule-based generation (no API key needed)
 python agent.py -m generate --no-llm
+
+# Custom files without literature search
+python agent.py -m generate \
+  --x-loading data/x.csv \
+  --y-loading data/y.csv \
+  --freesurfer-labels data/labels.csv \
+  --analysis-desc data/desc.txt \
+  --no-literature \
+  --output-dir results
 ```
 
 ## Output Files

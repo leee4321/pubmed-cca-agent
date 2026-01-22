@@ -13,13 +13,14 @@ from typing import Optional, Tuple
 from google import genai
 from dotenv import load_dotenv
 
-from data_loader import load_default_cca_results, CCAResults
+from data_loader import load_default_cca_results, CCAResults, load_cca_results
 from results_generator import generate_results_section, extract_results_summary, ResultsSummary
 from discussion_generator import (
     generate_discussion_section,
     gather_literature_for_discussion,
     save_discussion_output
 )
+from figure_generator import generate_figures as create_figures
 from pubmed_tool import pubmed_search_and_get_abstracts
 
 load_dotenv()
@@ -36,10 +37,17 @@ def check_genai_key():
 
 
 def generate_paper_sections(
-    base_dir: str = "input",
+    base_dir: Optional[str] = None,
+    x_loading_path: Optional[str] = None,
+    y_loading_path: Optional[str] = None,
+    freesurfer_label_path: Optional[str] = None,
+    analysis_desc_path: Optional[str] = None,
+    introduction_path: Optional[str] = None,
+    methods_path: Optional[str] = None,
     output_dir: str = "results",
     use_llm: bool = True,
     search_literature: bool = True,
+    generate_figures: bool = False,
     verbose: bool = True
 ) -> Tuple[str, str, list]:
     """
@@ -47,6 +55,12 @@ def generate_paper_sections(
 
     Args:
         base_dir: Directory containing input data files (default: input)
+        x_loading_path: Path to X loading CSV (overrides base_dir)
+        y_loading_path: Path to Y loading CSV (overrides base_dir)
+        freesurfer_label_path: Path to FreeSurfer labels CSV (overrides base_dir)
+        analysis_desc_path: Path to analysis description (overrides base_dir)
+        introduction_path: Optional path to Introduction text file
+        methods_path: Optional path to Methods text file
         output_dir: Directory to save output files (default: results)
         use_llm: Whether to use LLM for generation
         search_literature: Whether to search PubMed for prior literature
@@ -66,7 +80,37 @@ def generate_paper_sections(
         print("Loading CCA Results...")
         print("=" * 60)
 
-    cca_results = load_default_cca_results(base_dir)
+    # Check if individual files are specified
+    if all([x_loading_path, y_loading_path, freesurfer_label_path, analysis_desc_path]):
+        # Load from individual files
+        if verbose:
+            print("  Loading from specified files:")
+            print(f"    X loading: {x_loading_path}")
+            print(f"    Y loading: {y_loading_path}")
+            print(f"    FreeSurfer labels: {freesurfer_label_path}")
+            print(f"    Analysis description: {analysis_desc_path}")
+            if introduction_path:
+                print(f"    Introduction: {introduction_path}")
+            if methods_path:
+                print(f"    Methods: {methods_path}")
+        
+        cca_results = load_cca_results(
+            x_loading_path=x_loading_path,
+            y_loading_path=y_loading_path,
+            freesurfer_label_path=freesurfer_label_path,
+            analysis_description_path=analysis_desc_path,
+            introduction_path=introduction_path,
+            methods_path=methods_path
+        )
+    else:
+        # Load from default directory
+        if base_dir is None:
+            base_dir = "input"
+        
+        if verbose:
+            print(f"  Loading from directory: {base_dir}")
+        
+        cca_results = load_default_cca_results(base_dir)
 
     if verbose:
         print(f"  - Loaded {len(cca_results.x_loadings)} X loadings (PGS)")
@@ -80,6 +124,28 @@ def generate_paper_sections(
         print(f"\n  Significant X loadings (95% CI): {summary.n_significant_x}")
         print(f"  Significant Y loadings (95% CI): {summary.n_significant_y}")
 
+    # Generate Figures
+    if generate_figures:
+        if verbose:
+            print("\n" + "=" * 60)
+            print("Generating Figures...")
+            print("=" * 60)
+
+        try:
+            # Determine paths for figure generation
+            # Use provided paths or defaults based on base_dir
+            fig_x_path = x_loading_path if x_loading_path else os.path.join(base_dir, "bootstrap_result_summary_x_loading_comp1.csv")
+            fig_y_path = y_loading_path if y_loading_path else os.path.join(base_dir, "bootstrap_result_summary_y_loading_comp1.csv")
+            
+            
+            create_figures(
+                x_loading_path=fig_x_path,
+                y_loading_path=fig_y_path,
+                output_dir=output_dir
+            )
+        except Exception as e:
+            print(f"Warning: Failed to generate figures: {e}")
+
     # Generate Results section
     if verbose:
         print("\n" + "=" * 60)
@@ -89,7 +155,7 @@ def generate_paper_sections(
     results_text = generate_results_section(
         cca_results=cca_results,
         use_llm=use_llm,
-        base_dir=base_dir
+        base_dir=base_dir if base_dir else "."
     )
 
     # Generate Discussion section
@@ -103,7 +169,7 @@ def generate_paper_sections(
         summary=summary,
         gather_literature=search_literature,
         verbose=verbose,
-        base_dir=base_dir
+        base_dir=base_dir if base_dir else "."
     )
 
     return results_text, discussion_text, references, literature_text
@@ -246,18 +312,75 @@ def interactive_mode():
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description='PubMed CCA Agent - Generate paper sections from CCA results'
+        description='PubMed CCA Agent - Generate paper sections from CCA results',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Basic usage (required files only)
+  python agent.py --mode generate \\
+    --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \\
+    --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \\
+    --freesurfer-labels input/FreeSurfer_label.csv \\
+    --analysis-desc input/analysis_results_description.txt
+
+  # Full usage (with introduction, methods, and figures)
+  python agent.py --mode generate \\
+    --x-loading input/x_loading.csv \\
+    --y-loading input/y_loading.csv \\
+    --freesurfer-labels input/labels.csv \\
+    --analysis-desc input/description.txt \\
+    --introduction input/intro.txt \\
+    --methods input/methods.txt \\
+    --generate-figures
+        """
     )
+    
+    # Required Input Files
+    req_group = parser.add_argument_group('Required Input Files')
+    req_group.add_argument(
+        '--x-loading',
+        required=True,
+        type=str,
+        help='Path to X loading bootstrap results CSV file'
+    )
+    req_group.add_argument(
+        '--y-loading',
+        required=True,
+        type=str,
+        help='Path to Y loading bootstrap results CSV file'
+    )
+    req_group.add_argument(
+        '--freesurfer-labels',
+        required=True,
+        type=str,
+        help='Path to FreeSurfer labels CSV file'
+    )
+    req_group.add_argument(
+        '--analysis-desc',
+        required=True,
+        type=str,
+        help='Path to analysis description text file'
+    )
+    
+    # Optional Input Files
+    opt_group = parser.add_argument_group('Optional Input Files')
+    opt_group.add_argument(
+        '--introduction',
+        type=str,
+        help='Path to Introduction text file'
+    )
+    opt_group.add_argument(
+        '--methods',
+        type=str,
+        help='Path to Methods text file'
+    )
+    
+    # General options
     parser.add_argument(
         '--mode', '-m',
         choices=['generate', 'interactive', 'results', 'discussion'],
         default='generate',
         help='Operation mode (default: generate)'
-    )
-    parser.add_argument(
-        '--input-dir', '-i',
-        default='input',
-        help='Directory containing input data files (default: input)'
     )
     parser.add_argument(
         '--output-dir', '-o',
@@ -279,18 +402,30 @@ def main():
         action='store_true',
         help='Suppress progress output'
     )
+    parser.add_argument(
+        '--generate-figures',
+        action='store_true',
+        help='Generate visualization figures for results'
+    )
 
     args = parser.parse_args()
-
+    
     if args.mode == 'interactive':
         interactive_mode()
 
     elif args.mode == 'generate':
         results, discussion, refs, literature_text = generate_paper_sections(
-            base_dir=args.input_dir,
+            base_dir=None,
+            x_loading_path=args.x_loading,
+            y_loading_path=args.y_loading,
+            freesurfer_label_path=args.freesurfer_labels,
+            analysis_desc_path=args.analysis_desc,
+            introduction_path=args.introduction,
+            methods_path=args.methods,
             output_dir=args.output_dir,
             use_llm=not args.no_llm,
             search_literature=not args.no_literature,
+            generate_figures=args.generate_figures,
             verbose=not args.quiet
         )
         save_output(results, discussion, refs, literature_text, args.output_dir)

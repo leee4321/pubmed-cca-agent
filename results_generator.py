@@ -257,16 +257,17 @@ def generate_results_with_llm(
         for abbrev, full_name, est, ci_low, ci_high in regions[:5]:
             regional_text += f"  - {full_name}: loading={est:.3f}, 95% CI=[{ci_low:.3f}, {ci_high:.3f}]\n"
 
-    prompt = f"""You are a scientific writer specializing in neuroimaging and genetics research.
-Write a Results section for a scientific paper based on the sparse Canonical Correlation Analysis (SCCA) findings below.
+    prompt = f"""You are a senior scientific writer specializing in neuroimaging genetics research.
+
+Write a Results section based on the sparse Canonical Correlation Analysis (SCCA) findings below.
 
 CONTEXT FROM INTRODUCTION:
 {intro_summary}
 
-METHODS SUMMARY:
-The study used sparse CCA to identify multivariate associations between {summary.n_total_x} polygenic scores (PGS)
-and {summary.n_total_y} brain network measures (BNMs) in the ABCD dataset. Bootstrap resampling (5,000 iterations)
-was used to estimate confidence intervals. Variables are considered significant if their 95% CI does not cross zero.
+ANALYSIS OVERVIEW:
+Sparse CCA was used to identify multivariate associations between {summary.n_total_x} polygenic scores (PGS)
+and {summary.n_total_y} brain network measures (BNMs). Bootstrap resampling was used to estimate 95% confidence
+intervals. Variables are considered significant if their 95% CI does not cross zero.
 
 KEY FINDINGS:
 
@@ -279,27 +280,68 @@ KEY FINDINGS:
 3. Global Brain Network Metrics:
 {global_metrics_text}
 
-4. Regional Brain Network Metrics (selected):
+4. Regional Brain Network Metrics (top regions by loading magnitude):
 {regional_text}
 
 SUMMARY STATISTICS:
-- Total PGS variables: {summary.n_total_x}
-- Significant PGS variables: {summary.n_significant_x}
-- Total BNM variables: {summary.n_total_y}
-- Significant BNM variables: {summary.n_significant_y}
+- Total PGS variables analyzed: {summary.n_total_x}
+- Significant PGS variables (95% CI): {summary.n_significant_x} ({summary.n_significant_x}/{summary.n_total_x} = {100*summary.n_significant_x/summary.n_total_x:.1f}%)
+- Total BNM variables analyzed: {summary.n_total_y}
+- Significant BNM variables (95% CI): {summary.n_significant_y} ({summary.n_significant_y}/{summary.n_total_y} = {100*summary.n_significant_y/summary.n_total_y:.1f}%)
 
-INSTRUCTIONS:
-1. Write a formal Results section suitable for a neuroscience journal (e.g., NeuroImage, Brain)
-2. Start with an overview of the significant SCCA mode
-3. Describe the PGS loading patterns, noting that negative loadings for cognitive traits (IQ, cognitive performance, educational attainment) and positive loadings for psychiatric traits suggests a coherent biological pattern
-4. Describe the brain network patterns, noting which regions and metrics show the strongest contributions
-5. Use precise statistical language and report confidence intervals
-6. Write 4-6 paragraphs
-7. Do NOT include any citations or references - this is just the Results section
-8. Use past tense for describing findings
-9. Be objective and avoid interpretation (save that for Discussion)
+=== CRITICAL INSTRUCTIONS TO PREVENT HALLUCINATION ===
 
-Write the Results section:"""
+**ABSOLUTE PROHIBITIONS - DO NOT INCLUDE:**
+1. DO NOT reference any figures (Fig. 1, Figure 2, etc.)
+2. DO NOT reference any tables (Table 1, Supplementary Table, etc.)
+3. DO NOT reference any supplementary materials
+4. DO NOT invent or estimate canonical correlation coefficients (e.g., "r = 0.67")
+5. DO NOT invent or estimate p-values (e.g., "p < 0.001")
+6. DO NOT invent or estimate sample sizes (e.g., "N = 11,000")
+7. DO NOT invent or estimate variance explained (e.g., "explained 15% of variance")
+8. DO NOT invent or estimate effect sizes not provided in the data
+9. DO NOT mention bootstrap iteration counts unless explicitly provided
+10. DO NOT include any citations or references
+
+**USE ONLY THE DATA PROVIDED ABOVE:**
+- Only report loading values and 95% CIs that are explicitly listed above
+- Only use the count statistics provided (e.g., {summary.n_significant_x}/{summary.n_total_x} PGS significant)
+- If a specific statistic is not provided, do NOT estimate or infer it
+
+**WRITING GUIDELINES:**
+
+1. STRUCTURE:
+   - Write 6-10 paragraphs organized into clear subsections
+   - Use descriptive subheadings
+
+2. OPENING PARAGRAPH:
+   - Describe that a canonical mode linking PGS and BNM was identified
+   - State the number of significant variables on each side
+   - Describe the overall pattern (cognitive vs psychiatric axis) based on the loading directions
+   - DO NOT report any correlation coefficient or p-value
+
+3. POLYGENIC SCORE LOADINGS (2-3 paragraphs):
+   - Report ALL significant PGS with their exact loading values and 95% CIs as provided
+   - Group negative loadings (typically cognitive traits) and positive loadings (typically psychiatric/metabolic)
+   - Use only the exact numbers provided above
+
+4. BRAIN NETWORK METRICS (2-3 paragraphs):
+   - Report global metrics with their exact values and CIs
+   - State whether each metric is significant (CI excludes zero) or not
+   - Report regional metrics with their exact values
+   - Note anatomical patterns (subcortical, cortical, lateralization) based on the data
+
+5. STATISTICAL REPORTING:
+   - Always use the exact format: loading = X.XXX (95% CI: [X.XXX, X.XXX])
+   - Clearly state whether each variable is significant based on CI crossing zero
+   - Use only the numbers provided - do not round differently or modify values
+
+6. WRITING STYLE:
+   - Use past tense ("was", "showed", "demonstrated")
+   - Be objective and descriptive
+   - DO NOT interpret findings (save for Discussion)
+
+Write the Results section now, using ONLY the data provided above:"""
 
     try:
         response = client.models.generate_content(

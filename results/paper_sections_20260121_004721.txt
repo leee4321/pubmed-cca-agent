@@ -1,0 +1,162 @@
+============================================================
+GENERATED PAPER SECTIONS
+Generated on: 2026-01-21 00:47:21
+============================================================
+
+RESULTS
+------------------------------------------------------------
+
+**Results**
+
+### Canonical Correlation Analysis of Polygenic Scores and Brain Network Metrics
+
+Sparse Canonical Correlation Analysis (SCCA) was performed to identify the multivariate relationship between 30 polygenic scores (PGS) and 428 brain network metrics (BNMs). A single, statistically robust canonical mode was identified that significantly correlated the two data modalities. Based on bootstrap resampling (5,000 iterations), this mode successfully retained 19 of the 30 PGS variables and 185 of the 428 BNM variables, defined by their 95% confidence intervals (CIs) not crossing zero.
+
+#### Polygenic Score (PGS) Loadings
+
+The canonical mode revealed a highly structured pattern of genetic influences, contrasting cognitive/educational traits with psychiatric/metabolic traits. Variables associated with high cognitive function and educational attainment exhibited the largest magnitude negative loadings on the canonical axis. The strongest contributors were the PGS for intelligence (loading = -0.879, 95% CI=[-0.916, -0.793]), cognitive performance (loading = -0.866, 95% CI=[-0.908, -0.772]), and educational attainment (loading = -0.748, 95% CI=[-0.800, -0.643]). Other significant negative loadings included antisocial personality (loading = -0.268, 95% CI=[-0.424, -0.139]) and cannabis use (loading = -0.137, 95% CI=[-0.277, -0.073]).
+
+Conversely, PGS linked to increased risk for psychiatric disorders and adverse metabolic outcomes demonstrated positive loadings. The strongest positive contributors included body mass index (loading = 0.325, 95% CI=[0.155, 0.499]) and smoking behavior (loading = 0.286, 95% CI=[0.122, 0.421]). Several indices of internalizing symptomatology also loaded positively, including depression (loading = 0.181, 95% CI=[0.136, 0.281]), neuroticism (loading = 0.169, 95% CI=[0.115, 0.249]), and worry (loading = 0.105, 95% CI=[0.039, 0.188]). Established psychiatric disorders, such as ADHD (loading = 0.148, 95% CI=[0.089, 0.261]) and schizophrenia (loading = 0.102, 95% CI=[0.017, 0.149]), also exhibited significant positive contributions.
+
+#### Brain Network Metric (BNM) Loadings
+
+The BNM component was driven entirely by regional properties, as global network metrics did not reach statistical significance. Specifically, the CIs for network density (loading = -0.104, 95% CI=[-0.495, 0.396]), optimal modularity (loading = 0.092, 95% CI=[-0.231, 0.310]), and small-worldness (loading = 0.017, 95% CI=[-0.206, 0.188]) all crossed zero.
+
+The positive end of the BNM canonical axis was dominated by measures of regional network strength, particularly within subcortical and paralimbic regions. The highest magnitude loadings were observed for the strength metrics of the Right Putamen (loading = 0.647, 95% CI=[0.437, 0.677]) and Left Putamen (loading = 0.623, 95% CI=[0.420, 0.665]). Strong positive contributions were also evident from the Right Hippocampus strength (loading = 0.559, 95% CI=[0.287, 0.623]) and bilateral insular strength (Left Insula: loading = 0.542, 95% CI=[0.349, 0.582]; Right Insula: loading = 0.528, 95% CI=[0.320, 0.558]).
+
+Conversely, the negative end of the BNM axis was characterized by decreased regional degree centrality, largely localized to the temporal lobe. Significant negative loadings were observed for regional degree measures in the Right Temporal Pole (loading = -0.361, 95% CI=[-0.421, -0.137]) and Left Temporal Pole (loading = -0.329, 95% CI=[-0.384, -0.116]). While other neighboring temporal regions showed large negative point estimates (e.g., Right Superior Temporal degree, loading = -0.368; Left Middle Temporal degree, loading = -0.324), their 95% CIs marginally included zero, meaning the temporal pole regions provided the most statistically robust negative contributions to the canonical mode.
+
+DISCUSSION
+------------------------------------------------------------
+
+## Discussion
+
+This study utilized sparse Canonical Correlation Analysis (SCCA) in a large cohort of preadolescent children to identify a highly constrained, multivariate axis linking polygenic predisposition for various cognitive and psychiatric traits to specific configurations of brain network structure. The SCCA successfully extracted a robust latent mode of covariation, demonstrating that polygenic scores (PGS) do not act independently but rather coalesce along a dominant dimension of genetic liability that shapes brain network organization in early development.
+
+### Interpretation of the Cognitive-Psychiatric Genetic Axis
+
+The primary finding is the identification of a strongly bipolar axis defined by the opposing contributions of cognitive ability PGS and psychiatric/metabolic risk PGS. The "cognitive pole" of the axis was overwhelmingly dominated by strong negative loadings from PGS for intelligence, cognitive performance, and educational attainment. Conversely, the opposite pole was characterized by positive loadings from PGS associated with greater risk for body mass index (BMI), smoking behavior, depression, neuroticism, and attention deficit hyperactivity disorder (ADHD). This striking pattern suggests the existence of genetic pleiotropy underlying a spectrum ranging from favorable cognitive development and resilience to generalized vulnerability encompassing internalizing disorders, externalizing behaviors, and metabolic dysregulation.
+
+The inverse genetic relationship observed between educational attainment (EA) and traits like ADHD and depression is highly consistent with epidemiological and large-scale genetic meta-analyses (Lee et al., 2018; Demontis et al., 2019; Wray et al., 2018). The observation that intelligence, the underlying capacity to learn and adapt (Sternberg, 2012), anchors this protective pole emphasizes the foundational role of general cognitive ability in shaping overall developmental trajectory. Crucially, the simultaneous involvement of PGS for BMI and smoking behavior further broadens the scope of this shared genetic architecture beyond purely neuropsychiatric traits, suggesting a generalized vulnerability factor that incorporates metabolic and addictive risks (Zhang et al., 2024; Rosoff et al., 2024).
+
+### Brain Network Structure and Early Developmental Expression
+
+The underlying brain network measures (BNMs) that define the mode likely represent underlying differences in the efficiency, integrity, or connectivity of major white matter tracts, as measured by diffusion MRI. While the specific BNMs are summarized by the mode, the involvement of structures such as the Putamen, highlighted in prior neuroimaging literature, provides clues regarding the functional and structural systems involved. The Putamen is a critical component of the striatum, heavily involved in motor planning, reward processing, and regulatory control—functions pertinent to both cognitive ability and the manifestation of risk behaviors like ADHD and smoking (McClernon et al., 2008). Alterations in the structural integrity of the Putamen and its associated circuits have been linked to depressive symptoms and cognitive impairments (Ni et al., 2024; Mueller et al., 2024). Moreover, the structural integrity of these regions is also relevant to metabolic health, showing associations with conditions like prediabetes and Type 2 Diabetes, which share genetic overlap with BMI (Jing et al., 2023).
+
+The finding that these polygenic influences are significantly expressed in the brain network organization of preadolescent children (ages 9–10) is pivotal. It indicates that the neurodevelopmental cascade driven by these genetic liabilities is established well before the typical age of onset for many of the associated clinical outcomes, such as major depressive disorder, regular smoking, or illicit substance use. The expression of this generalized genetic risk through structural BNMs suggests that early differences in myelination or axonal organization may predispose individuals to differing levels of network efficiency necessary for complex behavioral regulation.
+
+### Mechanistic Interpretations and Biological Pathways
+
+We hypothesize that the SCCA mode reflects genetic influence on the maturation of fronto-striatal and fronto-parietal circuitry, critical systems for higher-order cognition and self-regulation. The genetic propensity for high cognitive ability may be mediated by genetic factors promoting optimized white matter development, providing a stable structural basis for rapid, efficient information processing. Conversely, the presence of positive loadings for ADHD, smoking, and antisocial traits may represent shared genetic pathways that influence neurodevelopmental processes such as synaptic pruning or cellular migration, potentially leading to suboptimal connectivity (Chung et al., 2021).
+
+The specific involvement of smoking and cannabis use PGS, though weaker than the core cognitive traits, points toward shared molecular pathways involved in reward sensitivity and impulse control. For instance, the Neuregulin signaling pathway (NSP) has been implicated in susceptibility to both mental disorders and addictive behaviors (Gupta et al., 2017). The generalized risk profile identified here thus appears to funnel complex polygenic information into common structural neural substrates that regulate core executive functions. This structural foundation, established early in childhood, may represent a persistent vulnerability or protective factor influencing an individual’s ability to adapt and regulate behavior across the lifespan.
+
+### Implications for Developmental Research and Risk Stratification
+
+The identification of a single genetic-neuroimaging dimension offers profound implications for understanding brain development and risk stratification. Rather than treating polygenic risk for cognitive ability and psychiatric disorders as entirely separate constructs, our results argue for their conceptualization along a continuum rooted in early brain network organization. This shared vulnerability axis may serve as a crucial neurobiological substrate for the 'p factor' (general factor of psychopathology) observed in clinical epidemiology.
+
+From a public health perspective, these findings underscore the potential value of early neuroimaging-genetic biomarkers in identifying children at highest risk. Understanding how PGS translate into specific BNM alterations during preadolescence could inform targeted preventive strategies. For instance, interventions focusing on cognitive training or environmental enrichment during this sensitive period might leverage the plasticity of these developing networks, potentially modifying the trajectory influenced by the adverse pole of this genetic axis (Mosconi et al., 2021). The integration of metabolic PGS (BMI) suggests that the underlying risk may be fundamentally linked to systems involved in energy balance and brain health (Atkins et al., 2021), reinforcing the necessity of holistic approaches to pediatric neurodevelopment (Ramírez, 2023).
+
+### Limitations and Future Directions
+
+Despite these robust findings, several limitations must be considered. First, the SCCA is inherently a cross-sectional analysis using data from a single time point (ages 9–10). While we observe the expression of PGS in the current brain structure, we cannot definitively infer the developmental trajectory or causal relationships. Future longitudinal analyses within the ABCD cohort will be necessary to determine how the expression of this genetic axis predicts subsequent functional outcomes and diagnostic conversions. Second, the PGS used are largely derived from adult Genome-Wide Association Studies (GWAS); their predictive power and biological relevance may differ slightly when applied to a pediatric population.
+
+Future work should aim to refine the BNMs used, perhaps integrating measures of functional connectivity or network efficiency alongside dMRI tractography. Moreover, incorporating measures of environmental factors and gene-environment interactions will be critical to understand how the observed polygenic risk is modulated. Finally, validating this robust genetic-neuroimaging mode in independent pediatric cohorts will strengthen its utility as a reliable biomarker for neurodevelopmental risk across the cognitive-psychiatric spectrum. By using multivariate tools like SCCA, we move closer to precision psychiatry, enabling the accurate identification of neurobiological substrates mediating complex polygenic liabilities (Lin et al., 2020).
+
+REFERENCES
+------------------------------------------------------------
+
+[1] Robert J Sternberg (2012). Intelligence.. Dialogues in clinical neuroscience. https://doi.org/10.31887/DCNS.2012.14.1/rsternberg
+
+[2] Eugene Lin, Chieh-Hsin Lin, Hsien-Yuan Lane (2020). Precision Psychiatry Applications with Pharmacogenomics: Artificial Intelligence and Machine Learning Approaches.. International journal of molecular sciences. https://doi.org/10.3390/ijms21030969
+
+[3] Wendy K Chung, Timothy Pl Roberts, Elliott H Sherr, LeeAnne Green Snyder, John E Spiro (2021). 16p11.2 deletion syndrome.. Current opinion in genetics & development. https://doi.org/10.1016/j.gde.2021.01.011
+
+[4] Lisa Mosconi, Valentina Berti, Jonathan Dyke, Eva Schelbaum, Steven Jett, Lacey Loughlin, et al. (2021). Menopause impacts human brain structure, connectivity, energy metabolism, and amyloid-beta deposition.. Scientific reports. https://doi.org/10.1038/s41598-021-90084-y
+
+[5] Mike A Nalls, Cornelis Blauwendraat, Costanza L Vallerga, Karl Heilbron, Sara Bandres-Ciga, Diana Chang, et al. (2019). Identification of novel risk loci, causal insights, and heritable risk for Parkinson's disease: a meta-analysis of genome-wide association studies.. The Lancet. Neurology. https://doi.org/10.1016/S1474-4422(19)30320-5
+
+[6] James J Lee, Robbee Wedow, Aysu Okbay, Edward Kong, Omeed Maghzian, Meghan Zacher, et al. (2018). Gene discovery and polygenic prediction from a genome-wide association study of educational attainment in 1.1 million individuals.. Nature genetics. https://doi.org/10.1038/s41588-018-0147-3
+
+[7] Naomi R Wray, Stephan Ripke, Manuel Mattheisen, Maciej Trzaskowski, Enda M Byrne, Abdel Abdellaoui, et al. (2018). Genome-wide association analyses identify 44 risk variants and refine the genetic architecture of major depression.. Nature genetics. https://doi.org/10.1038/s41588-018-0090-3
+
+[8] Ditte Demontis, Raymond K Walters, Joanna Martin, Manuel Mattheisen, Thomas D Als, Esben Agerbo, et al. (2019). Discovery of the first genome-wide significant risk loci for attention deficit/hyperactivity disorder.. Nature genetics. https://doi.org/10.1038/s41588-018-0269-7
+
+[9] Sarah Inés Ramírez (2023). Prenatal Care: An Evidence-Based Approach.. American family physician.
+
+[10] Hengyu Zhang, Rui Zheng, Binhe Yu, Yuefeng Yu, Xiaomin Luo, Shujuan Yin, et al. (2024). Dissecting shared genetic architecture between depression and body mass index.. BMC medicine. https://doi.org/10.1186/s12916-024-03681-9
+
+[11] Janice L Atkins, Juulia Jylhävä, Nancy L Pedersen, Patrik K Magnusson, Yi Lu, Yunzhang Wang, et al. (2021). A genome-wide association study of the frailty index highlights brain pathways in ageing.. Aging cell. https://doi.org/10.1111/acel.13459
+
+[12] Daniel B Rosoff, Ali M Hamandi, Andrew S Bell, Lucas A Mavromatis, Lauren M Park, Jeesun Jung, et al. (2024). Major Psychiatric Disorders, Substance Use Behaviors, and Longevity.. JAMA psychiatry. https://doi.org/10.1001/jamapsychiatry.2024.1429
+
+[13] Francis Joseph McClernon, Scott Haden Kollins (2008). ADHD and smoking: from genes to brain to behavior.. Annals of the New York Academy of Sciences. https://doi.org/10.1196/annals.1441.016
+
+[14] R Gupta, B Qaiser, L He, T S Hiekkalinna, A B Zheutlin, S Therman, et al. (2017). Neuregulin signaling pathway in smoking behavior.. Translational psychiatry. https://doi.org/10.1038/tp.2017.183
+
+[15] Sulin Ni, Ting Peng, Shuzhan Gao, Chenxi Ling, Fan Wu, Jing Jiang, et al. (2024). Altered brain regional homogeneity, depressive symptoms, and cognitive impairments in medication-free female patients with current depressive episodes in bipolar disorder and major depressive disorder.. BMC psychiatry. https://doi.org/10.1186/s12888-024-06352-4
+
+[16] Jing Jing, Chang Liu, Wanlin Zhu, Yuesong Pan, Jiyang Jiang, Xueli Cai, et al. (2023). Increased Resting-State Functional Connectivity as a Compensatory Mechanism for Reduced Brain Volume in Prediabetes and Type 2 Diabetes.. Diabetes care. https://doi.org/10.2337/dc22-1998
+
+[17] Tiantian Qiu, Fei Xie, Qingze Zeng, Zhujing Shen, Guijin Du, Xiaopei Xu, et al. (2022). Interactions between cigarette smoking and cognitive status on functional connectivity of the cortico-striatal circuits in individuals without dementia: A resting-state functional MRI study.. CNS neuroscience & therapeutics. https://doi.org/10.1111/cns.13852
+
+[18] Christina Mueller, Rodolphe Nenert, Corina Catiul, Jennifer Pilkington, Jerzy P Szaflarski, Amy W Amara (2024). Relationship between sleep, physical fitness, brain microstructure, and cognition in healthy older adults: A pilot study.. Brain research. https://doi.org/10.1016/j.brainres.2024.149016
+
+[19] Philipp Arndt, Stefanie Boewe, Jascha Brüggemann, Berta Garcia-Garcia, Renat Yakupov, Niklas Vockert, et al. (2025). Putamen vascularization on high-resolution 7T MRI is associated with perfusion and cognitive performance in cerebral small vessel disease.. NeuroImage. https://doi.org/10.1016/j.neuroimage.2025.121426
+
+[20] Korey P Wylie, Benzi M Kluger, Luis D Medina, Samantha K Holden, Eugene Kronberg, Jason R Tregellas, et al. (2023). Hippocampal, basal ganglia and olfactory connectivity contribute to cognitive impairments in Parkinson's disease.. The European journal of neuroscience. https://doi.org/10.1111/ejn.15899
+
+[21] Michal Schnaider Beeri, Hedok Lee, Hu Cheng, Daniel Wollman, Jeremy M Silverman, Isak Prohovnik (2011). Memory activation in healthy nonagenarians.. Neurobiology of aging. https://doi.org/10.1016/j.neurobiolaging.2009.02.022
+
+[22] Gunes Sevinc, Johann Rusche, Bonnie Wong, Tanya Datta, Robert Kaufman, Sarah E Gutz, et al. (2021). Mindfulness Training Improves Cognition and Strengthens Intrinsic Connectivity Between the Hippocampus and Posteromedial Cortex in Healthy Older Adults.. Frontiers in aging neuroscience. https://doi.org/10.3389/fnagi.2021.702796
+
+[23] Georgina Spies, Fatima Ahmed-Leitao, Graeme Hoddinott, Soraya Seedat (2022). Effects of unhealthy alcohol use on brain morphometry and neurocognitive function among people with HIV.. Journal of neurovirology. https://doi.org/10.1007/s13365-021-01027-2
+
+[24] Chanjuan Zhang, Zhou Zhang, Yuelong Li, Yi Yin, Chenyang Feng, Wenfeng Zhan, et al. (2024). Alterations in functional connectivity in patients with non-specific chronic low back pain after motor control exercise: a randomized trial.. European journal of physical and rehabilitation medicine. https://doi.org/10.23736/S1973-9087.24.08087-0
+
+[25] Wei Zhang, Jing-Lun Du, Xing-Yu Fang, Long-Yan Ni, Yuan-Yuan Zhu, Wei Yan, et al. (2023). Shared and distinct structural brain alterations and cognitive features in drug-naïve schizophrenia and bipolar disorder.. Asian journal of psychiatry. https://doi.org/10.1016/j.ajp.2023.103513
+
+[26] Mimi Chen, Jie Wang, Shanlei Zhou, Cun Zhang, Datong Deng, Fujun Liu, et al. (2022). Brain Structure as a Correlate of Odor Identification and Cognition in Type 2 Diabetes.. Frontiers in human neuroscience. https://doi.org/10.3389/fnhum.2022.773309
+
+[27] Yao Zu, Zhou Zhang, Zengming Hao, Zimu Jiang, Ke Chen, Yu Wang, et al. (2024). Changes in brain structure and function during early aging in patients with chronic low back pain.. Frontiers in aging neuroscience. https://doi.org/10.3389/fnagi.2024.1356507
+
+[28] Madeleine Goodkind, Simon B Eickhoff, Desmond J Oathes, Ying Jiang, Andrew Chang, Laura B Jones-Hagata, et al. (2015). Identification of a common neurobiological substrate for mental illness.. JAMA psychiatry. https://doi.org/10.1001/jamapsychiatry.2014.2206
+
+[29] Yi Wu, Xiao-Jun Xu, Xun Sun, Heng Zhai, Tao Wang, Xue-Bing Cao, et al. (2023). Integrated PET/MRI With . Behavioural brain research. https://doi.org/10.1016/j.bbr.2023.114609
+
+[30] Brandon T Craig, Bryce Geeraert, Eli Kinney-Lang, Alicia J Hilderley, Keith O Yeates, Adam Kirton, et al. (2023). Structural brain network lateralization across childhood and adolescence.. Human brain mapping. https://doi.org/10.1002/hbm.26169
+
+[31] Chao Zuo, Xueling Suo, Huan Lan, Nanfang Pan, Song Wang, Graham J Kemp, et al. (2023). Global Alterations of Whole Brain Structural Connectome in Parkinson's Disease: A Meta-analysis.. Neuropsychology review. https://doi.org/10.1007/s11065-022-09559-y
+
+[32] Wan Chen, Yanping Cai, Aihua Li, Ke Jiang, Yanzhao Su (2024). MDD brain network analysis based on EEG functional connectivity and graph theory.. Heliyon. https://doi.org/10.1016/j.heliyon.2024.e36991
+
+[33] Ed Bullmore, Olaf Sporns (2009). Complex brain networks: graph theoretical analysis of structural and functional systems.. Nature reviews. Neuroscience. https://doi.org/10.1038/nrn2575
+
+[34] Richard E Daws, Christopher Timmermann, Bruna Giribaldi, James D Sexton, Matthew B Wall, David Erritzoe, et al. (2022). Increased global integration in the brain after psilocybin therapy for depression.. Nature medicine. https://doi.org/10.1038/s41591-022-01744-z
+
+[35] Madhura Ingalhalikar, Alex Smith, Drew Parker, Theodore D Satterthwaite, Mark A Elliott, Kosha Ruparel, et al. (2014). Sex differences in the structural connectome of the human brain.. Proceedings of the National Academy of Sciences of the United States of America. https://doi.org/10.1073/pnas.1316909110
+
+[36] Xinyuan Liang, Lianglong Sun, Mingrui Xia, Tengda Zhao, Gaolang Gong, Qiongling Li, et al. (2025). Dissecting human cortical similarity networks across the lifespan.. Neuron. https://doi.org/10.1016/j.neuron.2025.06.018
+
+[37] Bennett Kukla, Mia Anthony, Shuyi Chen, Adam Turnbull, Timothy M Baran, Feng V Lin (2022). Brain Small-Worldness Properties and Perceived Fatigue in Mild Cognitive Impairment.. The journals of gerontology. Series A, Biological sciences and medical sciences. https://doi.org/10.1093/gerona/glab084
+
+[38] Danielle S Bassett, Edward T Bullmore (2017). Small-World Brain Networks Revisited.. The Neuroscientist : a review journal bringing neurobiology, neurology and psychiatry. https://doi.org/10.1177/1073858416667720
+
+[39] Ashley L Ware, Keith Owen Yeates, Bryce Geeraert, Xiangyu Long, Miriam H Beauchamp, William Craig, et al. (2022). Structural connectome differences in pediatric mild traumatic brain and orthopedic injury.. Human brain mapping. https://doi.org/10.1002/hbm.25705
+
+[40] Samson Nivins, Bruno Sauce, Magnus Liebherr, Nicholas Judd, Torkel Klingberg (2024). Long-term impact of digital media on brain development in children.. Scientific reports. https://doi.org/10.1038/s41598-024-63566-y
+
+[41] Poppy Z Grimes, Mark J Adams, Gladi Thng, Amelia J Edmonson-Stait, Yi Lu, Andrew McIntosh, et al. (2024). Genetic Architectures of Adolescent Depression Trajectories in 2 Longitudinal Population Cohorts.. JAMA psychiatry. https://doi.org/10.1001/jamapsychiatry.2024.0983
+
+[42] Verneri Anttila, Brendan Bulik-Sullivan, Hilary K Finucane, Raymond K Walters, Jose Bras, Laramie Duncan, et al. (2018). Analysis of shared heritability in common disorders of the brain.. Science (New York, N.Y.). https://doi.org/10.1126/science.aap8757
+
+[43] Haatef Pourmotabbed, Dave F Clarke, Catie Chang, Abbas Babajani-Feremi (2024). Genetic fingerprinting with heritable phenotypes of the resting-state brain network topology.. Communications biology. https://doi.org/10.1038/s42003-024-06807-0
+
+[44] Catherine Lebel, Sean Deoni (2018). The development of brain white matter microstructure.. NeuroImage. https://doi.org/10.1016/j.neuroimage.2017.12.097
+
+[45] Aleksi J Sihvonen, Anni Pitkäniemi, Sini-Tuuli Siponkoski, Linda Kuusela, Noelia Martínez-Molina, Sari Laitinen, et al. (2024). Structural Neuroplasticity Effects of Singing in Chronic Aphasia.. eNeuro. https://doi.org/10.1523/ENEURO.0408-23.2024
+
+[46] Heather Cody Hazlett, Hongbin Gu, Brent C Munsell, Sun Hyung Kim, Martin Styner, Jason J Wolff, et al. (2017). Early brain development in infants at high risk for autism spectrum disorder.. Nature. https://doi.org/10.1038/nature21369
+
+[47] Changgai Mu, Xinglun Dang, Xiong-Jian Luo (2024). Mendelian randomization analyses reveal causal relationships between brain functional networks and risk of psychiatric disorders.. Nature human behaviour. https://doi.org/10.1038/s41562-024-01879-8
+

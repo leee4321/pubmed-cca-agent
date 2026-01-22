@@ -225,8 +225,8 @@ def generate_discussion_with_llm(
     cca_results: CCAResults,
     summary: ResultsSummary,
     literature_context: LiteratureContext,
-    model_name: str = 'gemini-flash-latest'
-) -> Tuple[str, List[str]]:
+    model_name: str = 'gemini-2.5-flash'
+) -> Tuple[str, List[str], str]:
     """
     Generate Discussion section using Gemini LLM.
 
@@ -275,47 +275,187 @@ KEY FINDINGS FROM CCA ANALYSIS:
         ref_map[citation] = i
         ref_list.append(f"[{i}] {format_reference(article)}")
 
-    prompt = f"""You are a scientific writer specializing in neuroimaging genetics and brain development research.
-Write a comprehensive Discussion section for a scientific paper based on the CCA findings and related literature below.
+    prompt = f"""You are a senior scientific writer and neuroscientist specializing in neuroimaging genetics and developmental neuroscience.
+
+Write an analytical Discussion section based on the CCA findings and related literature below.
 
 STUDY CONTEXT:
 This study used sparse Canonical Correlation Analysis (SCCA) to examine the multivariate relationship between
-30 polygenic scores (PGS) for cognitive and psychiatric traits and brain network measures (BNMs) derived from
-diffusion MRI tractography in children from the ABCD study (ages 9-10 years).
+{summary.n_total_x} polygenic scores (PGS) for cognitive and psychiatric traits and {summary.n_total_y} brain network measures (BNMs)
+derived from diffusion MRI tractography in a pediatric cohort.
 
 {findings_text}
 
 RELEVANT PRIOR LITERATURE:
 {literature_text}
 
-AVAILABLE CITATIONS (use these in your discussion):
+AVAILABLE CITATIONS (integrate these extensively throughout):
 {chr(10).join([f'{format_citation(a)}' for a in literature_context.all_references[:20]])}
 
-INSTRUCTIONS FOR WRITING THE DISCUSSION:
+INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
 
-1. STRUCTURE (5-7 paragraphs):
-   a) Opening paragraph: Summarize the main finding - the identified mode of covariation between PGS and brain networks
-   b) Interpretation of PGS loadings: Discuss what the loading pattern (negative for cognitive traits, positive for
-      psychiatric traits) suggests about the genetic architecture of brain network organization
-   c) Brain network interpretation: Discuss which brain regions and network properties were most associated
-   d) Comparison with prior literature: Compare findings to previous studies (use the provided citations)
-   e) Biological/mechanistic interpretation: Propose potential mechanisms linking genetic predisposition to brain networks
-   f) Implications: Discuss implications for understanding brain development and psychiatric risk
-   g) Limitations and future directions
+1. STRUCTURE AND LENGTH:
+   - Write 12-18 paragraphs with MINIMAL subsection headings (maximum 3-4 subsections total)
+   - Target length: 3,000-4,000 words
+   - Use flowing narrative structure rather than rigid subsections
+   - Let ideas transition naturally between paragraphs
+   - Focus on depth of analysis rather than organizational structure
 
-2. CITATION STYLE:
-   - Use author-year format: (Author et al., Year) or Author et al. (Year)
-   - Only cite papers from the provided literature list
-   - Integrate citations naturally into the text
+2. SUBSECTION STRUCTURE (Use only 3-4 major subsections):
+   - Opening (no heading): 2-3 paragraphs introducing main findings and significance
+   - "Genetic architecture and brain network substrates": 5-7 paragraphs deeply integrating genetic and neural findings
+   - "Implications and future directions": 3-4 paragraphs on clinical relevance, limitations, and future work
+   - Closing (no heading): 1-2 paragraphs synthesizing key insights
 
-3. TONE:
-   - Academic and formal
-   - Cautious interpretation (use "may", "suggests", "appears to")
-   - Acknowledge limitations
+3. OPENING PARAGRAPHS (2-3 paragraphs, no subsection heading):
+   - Begin with a compelling statement of the principal finding
+   - Emphasize the novelty: multivariate approach, developmental timing (preadolescent), large sample
+   - Introduce the bipolar genetic architecture (cognitive vs psychiatric/metabolic traits)
+   - Set up the key questions that the discussion will address
+   - Establish why these findings matter for understanding brain development and psychiatric risk
 
-4. LENGTH: Approximately 800-1200 words
+4. MAIN DISCUSSION - "Genetic architecture and brain network substrates" (5-7 paragraphs):
+   
+   CRITICAL: This is the core of the discussion. Integrate the following themes fluidly across paragraphs:
+   
+   a) Genetic pleiotropy and shared pathways:
+      - Deeply analyze what the bipolar PGS pattern reveals about genetic architecture
+      - Connect to the 'p-factor' concept and transdiagnostic psychiatry
+      - Discuss genetic correlations between cognitive and psychiatric traits
+      - Extensively cite prior GWAS and genetic correlation studies
+      - Explain biological mechanisms of pleiotropy (shared molecular pathways, developmental timing)
+   
+   b) Brain network substrates and their functional significance:
+      - Integrate discussion of specific brain regions (putamen, hippocampus, insula, temporal pole)
+      - Explain WHY these regions are biologically plausible given the genetic findings
+      - Connect structural findings to functional networks and cognitive processes
+      - Discuss the absence of global metrics and what this reveals about network organization
+      - Cite neuroimaging studies that support or contextualize these findings
+   
+   c) Developmental neurobiology and mechanistic insights:
+      - Discuss neurodevelopmental processes: myelination, synaptic pruning, circuit formation
+      - Propose specific molecular mechanisms (neurotransmitter systems, synaptic proteins, inflammatory pathways)
+      - Explain why these patterns are visible at ages 9-10 (critical developmental period)
+      - Connect to gene expression atlases and developmental transcriptomics
+      - Discuss how genetic variants influence white matter microstructure
+      - Cite developmental neuroscience and molecular studies extensively
+   
+   d) Integration with prior neuroimaging-genetic literature:
+      - Compare findings with previous imaging genetics studies (both univariate and multivariate)
+      - Highlight convergence with prior work and explain discrepancies
+      - Discuss advantages of CCA over traditional approaches
+      - Compare pediatric vs adult findings
+      - Synthesize across GWAS, imaging genetics, and developmental neuroscience literatures
+      - Use 15-20+ citations naturally woven throughout this section
+   
+   WRITING APPROACH FOR THIS SECTION:
+   - Each paragraph should integrate multiple themes (genetics + brain + mechanisms + literature)
+   - Avoid separating topics into isolated paragraphs
+   - Build arguments progressively, with each paragraph deepening the analysis
+   - Use extensive citations (aim for 2-4 citations per paragraph)
+   - Connect findings to broader theoretical frameworks
+   - Propose testable hypotheses and mechanistic models
 
-Write the Discussion section:"""
+5. IMPLICATIONS AND FUTURE DIRECTIONS (3-4 paragraphs):
+   
+   a) Clinical and translational implications (1-2 paragraphs):
+      - Discuss potential for early biomarkers and risk stratification
+      - Address precision psychiatry and personalized intervention
+      - Consider preventive strategies during sensitive developmental periods
+      - Discuss ethical considerations of polygenic prediction in children
+      - Cite relevant clinical and translational studies
+   
+   b) Limitations (1 paragraph):
+      - Provide honest, substantive discussion of key limitations
+      - Cross-sectional design, PGS from adult GWAS, population specificity
+      - Measurement limitations, unmeasured confounders
+      - Keep concise but thorough (3-5 sentences per limitation)
+   
+   c) Future research directions (1 paragraph):
+      - Propose specific, concrete next steps
+      - Longitudinal follow-up, multi-modal integration, mechanistic studies
+      - Validation in diverse populations, gene-environment interactions
+      - Clinical translation and intervention trials
+
+6. CLOSING PARAGRAPHS (1-2 paragraphs, no subsection heading):
+   - Synthesize the key insights from the discussion
+   - Return to the broader significance for understanding brain development
+   - End with a forward-looking statement about implications for psychiatry and neuroscience
+
+7. CITATION STRATEGY (CRITICAL):
+   - Aim for 20-30+ total citations throughout the discussion
+   - Integrate citations naturally: "Previous work has shown... (Author et al., Year)"
+   - Cluster related citations: "...consistent with multiple studies (Author1 et al., Year1; Author2 et al., Year2)"
+   - Use citations to build arguments, not just support isolated facts
+   - Cite both supporting and contrasting evidence
+   - Only use papers from the provided literature list
+   - Author-year format: (Author et al., Year) or "Author et al. (Year) demonstrated..."
+
+8. SCIENTIFIC DEPTH AND INSIGHT:
+   - Go beyond describing findings to explaining WHY and HOW
+   - Propose mechanistic models and testable hypotheses
+   - Connect molecular, cellular, circuit, and behavioral levels of analysis
+   - Discuss evolutionary and developmental perspectives where relevant
+   - Address methodological innovations and their implications
+   - Consider alternative interpretations and address them
+   - Relate findings to broader theoretical frameworks in neuroscience and psychiatry
+
+9. WRITING STYLE:
+   - Sophisticated, precise scientific language
+   - Balance technical depth with accessibility
+   - Use cautious interpretation: "suggests", "may indicate", "is consistent with", "appears to"
+   - Active voice for impact when appropriate
+   - Smooth transitions between ideas and paragraphs
+   - Build a compelling narrative arc
+   - Maintain objectivity while conveying significance
+   - Vary sentence structure for readability
+
+10. QUANTITATIVE INTEGRATION:
+    - Reference specific loading values and effect sizes
+    - Discuss magnitude and precision of estimates
+    - Compare effect sizes across PGS and brain regions
+    - Relate statistical findings to biological and clinical significance
+    - Use quantitative comparisons with prior literature where possible
+
+11. CRITICAL REQUIREMENTS:
+    - MINIMIZE subsection headings (only 3-4 total)
+    - MAXIMIZE literature integration (20-30+ citations)
+    - EMPHASIZE mechanistic insights and biological interpretation
+    - CONNECT findings across multiple levels of analysis
+    - PROPOSE testable hypotheses and future directions
+    - MAINTAIN narrative flow rather than checklist structure
+
+=== CRITICAL INSTRUCTIONS TO PREVENT HALLUCINATION ===
+
+**ABSOLUTE PROHIBITIONS - DO NOT INCLUDE:**
+1. DO NOT reference any figures (Fig. 1, Figure 2, etc.)
+2. DO NOT reference any tables (Table 1, Supplementary Table, etc.)
+3. DO NOT reference any supplementary materials (Supplementary Fig., Extended Data, etc.)
+4. DO NOT invent or estimate canonical correlation coefficients (e.g., "r = 0.67", "Rc = 0.45")
+5. DO NOT invent or estimate p-values (e.g., "p < 0.001", "p = 0.02")
+6. DO NOT invent or estimate exact sample sizes (e.g., "N = 11,000", "n = 9,500")
+7. DO NOT invent or estimate variance explained (e.g., "explained 15% of variance")
+8. DO NOT invent effect sizes, odds ratios, or statistics not provided in the data
+9. DO NOT mention specific bootstrap iteration counts unless explicitly provided
+10. DO NOT cite papers that are not in the provided literature list
+
+**USE ONLY THE DATA PROVIDED:**
+- Only use loading values and statistics explicitly listed in the KEY FINDINGS section
+- Only cite papers from the AVAILABLE CITATIONS list provided above
+- If specific statistics are not provided, describe findings qualitatively instead
+
+12. AVOID:
+    - Excessive subsection headings (no more than 3-4 total)
+    - Simply restating results without interpretation
+    - Unsupported causal claims
+    - Vague, hand-waving explanations
+    - Ignoring contradictory evidence or alternative interpretations
+    - Superficial treatment of complex topics
+    - Isolated discussion of topics without integration
+    - ANY references to figures or tables
+    - Inventing statistics or numerical values not provided
+
+Write a Discussion section that integrates prior literature to provide scientific depth and mechanistic understanding, using ONLY the data and citations provided:"""
 
     try:
         response = client.models.generate_content(

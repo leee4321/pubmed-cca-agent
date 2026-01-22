@@ -165,8 +165,8 @@ def load_cca_results(
     y_loading_path: str,
     freesurfer_label_path: str,
     analysis_description_path: str,
-    introduction_path: str,
-    methods_path: str
+    introduction_path: Optional[str] = None,
+    methods_path: Optional[str] = None
 ) -> CCAResults:
     """
     Load all CCA results and context files.
@@ -176,8 +176,8 @@ def load_cca_results(
         y_loading_path: Path to Y loading bootstrap results CSV
         freesurfer_label_path: Path to FreeSurfer labels CSV
         analysis_description_path: Path to analysis description text file
-        introduction_path: Path to Introduction text file
-        methods_path: Path to Methods text file
+        introduction_path: Optional path to Introduction text file
+        methods_path: Optional path to Methods text file
 
     Returns:
         CCAResults object containing all loaded data
@@ -186,8 +186,17 @@ def load_cca_results(
     y_loadings = load_bootstrap_csv(y_loading_path)
     freesurfer_labels = load_freesurfer_labels(freesurfer_label_path)
     analysis_description = load_text_file(analysis_description_path)
-    introduction = load_text_file(introduction_path)
-    methods = load_text_file(methods_path)
+    
+    # Load optional files or use default text
+    if introduction_path and Path(introduction_path).exists():
+        introduction = load_text_file(introduction_path)
+    else:
+        introduction = "No introduction provided."
+    
+    if methods_path and Path(methods_path).exists():
+        methods = load_text_file(methods_path)
+    else:
+        methods = "No methods description provided."
 
     return CCAResults(
         x_loadings=x_loadings,

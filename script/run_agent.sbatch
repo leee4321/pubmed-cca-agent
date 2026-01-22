@@ -27,5 +27,18 @@ python --version
 pip install -r requirements.txt
 
 # 4. Run the Agent to generate results and discussion
-# This will use the input/ folder and save to results/ folder
-python agent.py --mode generate
+# 4. Run the Agent to generate results, discussion, and figures
+# Note: Providing all input files explicitly is now required.
+echo "Starting PubMed CCA Agent..."
+
+python agent.py --mode generate \
+  --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
+  --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
+  --freesurfer-labels input/FreeSurfer_label.csv \
+  --analysis-desc input/analysis_results_description.txt \
+  --introduction input/Introduction.txt \
+  --methods input/Methods.txt \
+  --generate-figures \
+  --output-dir results
+
+echo "Agent execution completed. Check 'results' directory for outputs."
