@@ -40,9 +40,9 @@ python -c "import nltk; nltk.download('punkt', quiet=True)"
 # - Uses Gemini 2.5 Flash model
 # - Generates Figures (--generate-figures)
 # - Contextualized with Introduction and Methods
-echo "Starting PubMed CCA Agent (Generation Mode)..."
-
-python agent.py --mode generate \
+# Run in full generation mode with ReAct enabled for Discussion
+# This ensures Discussion is tightly coupled with the generated Results
+python agent.py --mode generate --react \
   --x-loading input/bootstrap_result_summary_x_loading_comp1.csv \
   --y-loading input/bootstrap_result_summary_y_loading_comp1.csv \
   --freesurfer-labels input/FreeSurfer_label.csv \

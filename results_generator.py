@@ -9,7 +9,7 @@ import os
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 from data_loader import (
@@ -44,6 +44,7 @@ class ResultsSummary:
     n_significant_x: int
     n_total_y: int
     n_significant_y: int
+    analysis_description: str
 
 
 def extract_results_summary(cca_results: CCAResults, ci_level: str = "95") -> ResultsSummary:
@@ -128,7 +129,8 @@ def extract_results_summary(cca_results: CCAResults, ci_level: str = "95") -> Re
         n_total_x=len(cca_results.x_loadings),
         n_significant_x=len(sig_x),
         n_total_y=len(cca_results.y_loadings),
-        n_significant_y=len(sig_y)
+        n_significant_y=len(sig_y),
+        analysis_description=cca_results.analysis_description
     )
 
 
@@ -227,7 +229,8 @@ def generate_results_with_llm(
         print("Warning: GOOGLE_API_KEY not found. Using manual generation.")
         return generate_results_text_manual(summary)
 
-    client = genai.Client(api_key=api_key)
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(model_name)
 
     # Prepare context
     intro_summary = cca_results.introduction[:1500] if len(cca_results.introduction) > 1500 else cca_results.introduction
@@ -344,10 +347,7 @@ SUMMARY STATISTICS:
 Write the Results section now, using ONLY the data provided above:"""
 
     try:
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
         return response.text
     except Exception as e:
         print(f"Error generating Results with LLM: {e}")

@@ -10,7 +10,7 @@ import argparse
 from datetime import datetime
 from typing import Optional, Tuple
 
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 from data_loader import load_default_cca_results, CCAResults, load_cca_results
@@ -20,6 +20,7 @@ from discussion_generator import (
     gather_literature_for_discussion,
     save_discussion_output
 )
+from react_discussion_agent import generate_discussion_react
 from figure_generator import generate_figures as create_figures
 from pubmed_tool import pubmed_search_and_get_abstracts
 
@@ -48,8 +49,9 @@ def generate_paper_sections(
     use_llm: bool = True,
     search_literature: bool = True,
     generate_figures: bool = False,
+    use_react: bool = False,
     verbose: bool = True
-) -> Tuple[str, str, list]:
+) -> Tuple[str, str, list, str]:
     """
     Generate Results and Discussion sections for a scientific paper.
 
@@ -146,6 +148,10 @@ def generate_paper_sections(
         except Exception as e:
             print(f"Warning: Failed to generate figures: {e}")
 
+    # Create timestamp for all outputs in this run
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    os.makedirs(output_dir, exist_ok=True)
+
     # Generate Results section
     if verbose:
         print("\n" + "=" * 60)
@@ -158,19 +164,82 @@ def generate_paper_sections(
         base_dir=base_dir if base_dir else "."
     )
 
+    # Save Results immediately
+    results_path = os.path.join(output_dir, f"results_{timestamp}.txt")
+    with open(results_path, 'w', encoding='utf-8') as f:
+        f.write("RESULTS\n")
+        f.write("=" * 60 + "\n\n")
+        f.write(results_text)
+    print(f"Results saved to: {results_path}")
+
     # Generate Discussion section
     if verbose:
         print("\n" + "=" * 60)
         print("Generating Discussion Section...")
         print("=" * 60)
+        if use_react:
+            print("Using ReAct Agent for step-by-step reasoning...")
 
-    discussion_text, references, literature_text, literature_context = generate_discussion_section(
-        cca_results=cca_results,
-        summary=summary,
-        gather_literature=search_literature,
-        verbose=verbose,
-        base_dir=base_dir if base_dir else "."
-    )
+    if use_llm:
+        if use_react:
+            discussion_text, references, literature_text = generate_discussion_react(
+                cca_results, summary, results_text=results_text
+            )
+        else:
+            discussion_text, references, literature_text, literature_context = generate_discussion_section(
+                cca_results=cca_results,
+                summary=summary,
+                results_text=results_text,
+                gather_literature=search_literature,
+                verbose=verbose,
+                base_dir=base_dir if base_dir else "."
+            )
+        
+        # Save Discussion immediately
+        discussion_path = os.path.join(output_dir, f"discussion_{timestamp}.txt")
+        with open(discussion_path, 'w', encoding='utf-8') as f:
+            f.write("DISCUSSION\n")
+            f.write("=" * 60 + "\n\n")
+            f.write(discussion_text)
+        print(f"Discussion saved to: {discussion_path}")
+
+        # Save References immediately
+        references_path = os.path.join(output_dir, f"references_{timestamp}.txt")
+        with open(references_path, 'w', encoding='utf-8') as f:
+            f.write("REFERENCES\n")
+            f.write("=" * 60 + "\n\n")
+            for ref in references:
+                f.write(ref + "\n\n")
+        print(f"References saved to: {references_path}")
+        
+        # Save literature context immediately
+        literature_path = os.path.join(output_dir, f"literature_text_{timestamp}.txt")
+        with open(literature_path, 'w', encoding='utf-8') as f:
+            f.write("LITERATURE TEXT\n")
+            f.write("=" * 60 + "\n\n")
+            f.write(literature_text)
+        print(f"Literature text saved to: {literature_path}")
+
+        # Save combined document
+        combined_path = os.path.join(output_dir, f"paper_sections_{timestamp}.txt")
+        with open(combined_path, 'w', encoding='utf-8') as f:
+            f.write("=" * 60 + "\n")
+            f.write("GENERATED PAPER SECTIONS\n")
+            f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write("=" * 60 + "\n\n")
+            f.write("RESULTS\n")
+            f.write("-" * 60 + "\n\n")
+            f.write(results_text)
+            f.write("\n\n")
+            f.write("DISCUSSION\n")
+            f.write("-" * 60 + "\n\n")
+            f.write(discussion_text)
+        print(f"Combined paper sections saved to: {combined_path}")
+
+    else:
+        discussion_text = "Discussion generation skipped (LLM disabled)."
+        references = []
+        literature_text = ""
 
     return results_text, discussion_text, references, literature_text
 
@@ -378,9 +447,14 @@ Examples:
     # General options
     parser.add_argument(
         '--mode', '-m',
-        choices=['generate', 'interactive', 'results', 'discussion'],
+        choices=['generate', 'interactive', 'results'],
         default='generate',
         help='Operation mode (default: generate)'
+    )
+    parser.add_argument(
+        '--react',
+        action='store_true',
+        help='Use ReAct Agent for discussion generation'
     )
     parser.add_argument(
         '--output-dir', '-o',
@@ -426,9 +500,10 @@ Examples:
             use_llm=not args.no_llm,
             search_literature=not args.no_literature,
             generate_figures=args.generate_figures,
+            use_react=args.react,
             verbose=not args.quiet
         )
-        save_output(results, discussion, refs, literature_text, args.output_dir)
+        # Files are now saved incrementally within generate_paper_sections
 
         print("\n" + "=" * 60)
         print("Generation complete!")
@@ -442,16 +517,6 @@ Examples:
         )
         print(results)
 
-    elif args.mode == 'discussion':
-        discussion, refs, literature_text, literature_context = generate_discussion_section(
-            gather_literature=not args.no_literature,
-            verbose=not args.quiet,
-            base_dir=args.input_dir
-        )
-        print(discussion)
-        print("\n\nReferences:")
-        for ref in refs:
-            print(ref)
 
 
 # Legacy function for backward compatibility

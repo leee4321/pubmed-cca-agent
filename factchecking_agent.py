@@ -1,7 +1,7 @@
 import os
 import re
 from typing import List, Tuple, Optional
-from google import genai
+import google.generativeai as genai
 import torch
 import pickle
 import logging
@@ -41,7 +41,8 @@ class FactChecker:
         if not api_key:
             raise ValueError("GOOGLE_API_KEY not found in environment variables")
 
-        self.client = genai.Client(api_key=api_key)
+        genai.configure(api_key=api_key)
+        self.model = genai.GenerativeModel(model_name)
         self.model_name = model_name
         self.nli_model = AutoModelForSequenceClassification.from_pretrained('cross-encoder/nli-deberta-v3-base')
         self.nli_model_tokenizer = AutoTokenizer.from_pretrained('cross-encoder/nli-deberta-v3-base')
@@ -139,10 +140,7 @@ Answer with yes or no. Enclose your answer with \\box{{}}.
 """
         
         try:
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=PROMPT
-            )
+            response = self.model.generate_content(PROMPT)
             text = response.text
 
         except Exception as e:
@@ -296,6 +294,9 @@ if __name__ == "__main__":
     
     test_file_dir = "test_files"
     output_dir = "results"
+    
+    os.makedirs(test_file_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
     if os.path.exists(os.path.join(test_file_dir, 'discussion.txt')) and os.path.exists(os.path.join(test_file_dir, 'literature_context.pickle')):
         with open(os.path.join(test_file_dir, 'discussion.txt'), 'r') as f:

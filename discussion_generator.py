@@ -12,7 +12,7 @@ import time
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, field
 
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 from data_loader import (
@@ -225,6 +225,7 @@ def generate_discussion_with_llm(
     cca_results: CCAResults,
     summary: ResultsSummary,
     literature_context: LiteratureContext,
+    results_text: str = "",
     model_name: str = 'gemini-2.5-flash'
 ) -> Tuple[str, List[str], str]:
     """
@@ -243,7 +244,8 @@ def generate_discussion_with_llm(
     if not api_key:
         raise ValueError("GOOGLE_API_KEY not found in environment variables")
 
-    client = genai.Client(api_key=api_key)
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(model_name)
 
     # Format key findings
     top_neg_pgs = [(get_trait_full_name(n), e) for n, e, _, _ in summary.significant_negative_pgs[:5]]
@@ -410,7 +412,10 @@ INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
    - Maintain objectivity while conveying significance
    - Vary sentence structure for readability
 
-10. QUANTITATIVE INTEGRATION:
+10. CONTEXT FROM RESULTS SECTION:
+{results_text}
+
+CONTEXT FROM INTRODUCTION:
     - Reference specific loading values and effect sizes
     - Discuss magnitude and precision of estimates
     - Compare effect sizes across PGS and brain regions
@@ -458,10 +463,7 @@ INSTRUCTIONS FOR NATURE-STYLE DISCUSSION SECTION:
 Write a Discussion section that integrates prior literature to provide scientific depth and mechanistic understanding, using ONLY the data and citations provided:"""
 
     try:
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
         discussion_text = response.text
 
         return discussion_text, ref_list, literature_text
@@ -473,6 +475,7 @@ Write a Discussion section that integrates prior literature to provide scientifi
 def generate_discussion_section(
     cca_results: Optional[CCAResults] = None,
     summary: Optional[ResultsSummary] = None,
+    results_text: str = "",
     gather_literature: bool = True,
     verbose: bool = True,
     base_dir: str = "."
@@ -513,10 +516,11 @@ def generate_discussion_section(
 
     if verbose:
         print("\nGenerating Discussion section with LLM...")
-
-    discussion, references, literature_text = generate_discussion_with_llm(
-        cca_results, summary, literature_context
-    )
+        # Use our enhanced discussion generator
+        # Pass literature context if we searched, otherwise it will be empty
+        discussion, references, literature_text = generate_discussion_with_llm(
+            cca_results, summary, literature_context, results_text=results_text, model_name='gemini-2.5-flash'
+        )
 
     return discussion, references, literature_text, literature_context
 
