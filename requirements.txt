@@ -8,3 +8,4 @@ matplotlib>=3.5.0
 seaborn>=0.11.0
 nilearn>=0.9.0
 biopython>=1.79
+nltk>=3.8

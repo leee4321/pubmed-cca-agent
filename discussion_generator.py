@@ -172,13 +172,14 @@ def gather_literature_for_discussion(
     return context
 
 
-def format_literature_for_prompt(context: LiteratureContext, max_chars: int = 8000) -> str:
+def format_literature_for_prompt(context: LiteratureContext, max_chars: Optional[int] = None, max_abstract_length: Optional[int] = None) -> str:
     """
     Format gathered literature into a prompt-friendly string.
 
     Args:
         context: LiteratureContext with articles
-        max_chars: Maximum characters to include
+        max_chars: Maximum characters to include (None means no limit)
+        max_abstract_length: Maximum characters per abstract (None means no limit)
 
     Returns:
         Formatted string of literature summaries
@@ -190,31 +191,31 @@ def format_literature_for_prompt(context: LiteratureContext, max_chars: int = 80
         sections.append("## PGS-Brain Association Literature")
         for trait, articles in context.pgs_brain_articles.items():
             sections.append(f"\n### {trait}")
-            sections.append(format_articles_for_context(articles, max_abstract_length=300))
+            sections.append(format_articles_for_context(articles, max_abstract_length=max_abstract_length))
 
     # Brain region literature
     if context.brain_region_articles:
         sections.append("\n## Brain Region Function Literature")
         for region, articles in list(context.brain_region_articles.items())[:3]:
             sections.append(f"\n### {region}")
-            sections.append(format_articles_for_context(articles[:2], max_abstract_length=300))
+            sections.append(format_articles_for_context(articles[:2], max_abstract_length=max_abstract_length))
 
     # Network metric literature
     if context.network_metric_articles:
         sections.append("\n## Network Metric Literature")
         for metric, articles in list(context.network_metric_articles.items())[:2]:
             sections.append(f"\n### {metric}")
-            sections.append(format_articles_for_context(articles[:2], max_abstract_length=300))
+            sections.append(format_articles_for_context(articles[:2], max_abstract_length=max_abstract_length))
 
     # General literature
     if context.general_topic_articles:
         sections.append("\n## General Topic Literature")
-        sections.append(format_articles_for_context(context.general_topic_articles[:3], max_abstract_length=300))
+        sections.append(format_articles_for_context(context.general_topic_articles[:3], max_abstract_length=max_abstract_length))
 
     full_text = "\n".join(sections)
 
-    # Truncate if too long
-    if len(full_text) > max_chars:
+    # Truncate if too long (explicit None check allows 0 to be a valid value)
+    if max_chars is not None and len(full_text) > max_chars:
         full_text = full_text[:max_chars] + "\n\n[Literature truncated due to length...]"
 
     return full_text
@@ -225,7 +226,7 @@ def generate_discussion_with_llm(
     summary: ResultsSummary,
     literature_context: LiteratureContext,
     model_name: str = 'gemini-2.5-flash'
-) -> Tuple[str, List[str]]:
+) -> Tuple[str, List[str], str]:
     """
     Generate Discussion section using Gemini LLM.
 
@@ -463,7 +464,7 @@ Write a Discussion section that integrates prior literature to provide scientifi
         )
         discussion_text = response.text
 
-        return discussion_text, ref_list
+        return discussion_text, ref_list, literature_text
 
     except Exception as e:
         raise RuntimeError(f"Error generating Discussion with LLM: {e}")
@@ -475,7 +476,7 @@ def generate_discussion_section(
     gather_literature: bool = True,
     verbose: bool = True,
     base_dir: str = "."
-) -> Tuple[str, List[str]]:
+) -> Tuple[str, List[str], str]:
     """
     Main function to generate the Discussion section.
 
@@ -513,16 +514,17 @@ def generate_discussion_section(
     if verbose:
         print("\nGenerating Discussion section with LLM...")
 
-    discussion, references = generate_discussion_with_llm(
+    discussion, references, literature_text = generate_discussion_with_llm(
         cca_results, summary, literature_context
     )
 
-    return discussion, references
+    return discussion, references, literature_text, literature_context
 
 
 def save_discussion_output(
     discussion: str,
     references: List[str],
+    literature_text: str,
     output_dir: str = "results",
     filename_prefix: str = "generated_discussion"
 ):
@@ -532,6 +534,7 @@ def save_discussion_output(
     Args:
         discussion: Generated discussion text
         references: List of formatted references
+        literature_text: Text listing literature gathered using keyword search on PubMed. This text is included in the prompt for LLM to generate discussions.
         output_dir: Directory to save files
         filename_prefix: Prefix for output filenames
     """
@@ -551,9 +554,18 @@ def save_discussion_output(
         f.write("=" * 60 + "\n\n")
         for ref in references:
             f.write(ref + "\n\n")
+            
+    # Save literature context
+    literature_path = os.path.join(output_dir, f"{filename_prefix}_literature_text.txt")
+    with open(literature_path, 'w', encoding='utf-8') as f:
+        f.write("LITERATURE TEXT\n")
+        f.write("=" * 60 + "\n\n")
+        f.write(literature_text)
+    
 
     print(f"Discussion saved to: {discussion_path}")
     print(f"References saved to: {references_path}")
+    print(f"Literature text saved to: {literature_path}")
 
 
 if __name__ == "__main__":
@@ -563,7 +575,7 @@ if __name__ == "__main__":
 
     try:
         # Generate discussion
-        discussion, references = generate_discussion_section(
+        discussion, references, literature_text, literature_context = generate_discussion_section(
             gather_literature=True,
             verbose=True
         )
@@ -584,7 +596,7 @@ if __name__ == "__main__":
             print(f"... and {len(references) - 10} more references")
 
         # Optionally save to files
-        # save_discussion_output(discussion, references)
+        # save_discussion_output(discussion, references, literature_text)
 
     except FileNotFoundError as e:
         print(f"Error: Data file not found - {e}")
