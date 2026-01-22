@@ -15,6 +15,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 try:
+    import nltk
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except (LookupError, AttributeError):
+        nltk.download('punkt', quiet=True)
+        nltk.download('punkt_tab', quiet=True)
     from nltk.tokenize import sent_tokenize
 except ImportError:
     # Fallback if nltk is not available
@@ -30,7 +36,7 @@ from pubmed_tool import PubMedArticle, format_citation, format_reference
 class FactChecker:
     """Fact-checking agent that verifies claims in discussion text against cited abstracts."""
     
-    def __init__(self, model_name: str = 'gemini-2.5-flash'):
+    def __init__(self, model_name: str = 'gemini-1.5-flash'):
         """
         Initialize the FactChecker.
         

@@ -33,7 +33,7 @@ pip install -r requirements.txt
 # 4. Download NLTK data (Required for Fact Checking Agent)
 # This downloads 'punkt' tokenizer data if not already present
 echo "Checking NLTK data..."
-python -c "import nltk; nltk.download('punkt', quiet=True)"
+python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('punkt_tab', quiet=True)"
 
 # 5. Run the Agent (Generate Mode)
 # - Generates Results and Discussion sections

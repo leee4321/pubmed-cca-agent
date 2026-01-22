@@ -10,6 +10,20 @@ from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
 import google.generativeai as genai
+try:
+    from nltk.tokenize import sent_tokenize
+    import nltk
+    # Try to use punkt_tab, and download if missing
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except (LookupError, AttributeError):
+        nltk.download('punkt', quiet=True)
+        nltk.download('punkt_tab', quiet=True)
+except ImportError:
+    # Handle case where NLTK is not installed
+    sent_tokenize = None # type: ignore
+    print("NLTK not installed. Some functionalities might be limited.")
+
 from dotenv import load_dotenv
 
 from data_loader import (
@@ -211,7 +225,7 @@ showed significant loadings (95% confidence interval not crossing zero). Similar
 def generate_results_with_llm(
     cca_results: CCAResults,
     summary: ResultsSummary,
-    model_name: str = 'gemini-flash-latest'
+    model_name: str = 'gemini-1.5-flash'
 ) -> str:
     """
     Generate Results section using Gemini LLM.

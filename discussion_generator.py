@@ -226,7 +226,7 @@ def generate_discussion_with_llm(
     summary: ResultsSummary,
     literature_context: LiteratureContext,
     results_text: str = "",
-    model_name: str = 'gemini-2.5-flash'
+    model_name: str = 'gemini-1.5-flash'
 ) -> Tuple[str, List[str], str]:
     """
     Generate Discussion section using Gemini LLM.
@@ -519,7 +519,7 @@ def generate_discussion_section(
         # Use our enhanced discussion generator
         # Pass literature context if we searched, otherwise it will be empty
         discussion, references, literature_text = generate_discussion_with_llm(
-            cca_results, summary, literature_context, results_text=results_text, model_name='gemini-2.5-flash'
+            cca_results, summary, literature_context, results_text=results_text, model_name='gemini-1.5-flash'
         )
 
     return discussion, references, literature_text, literature_context
