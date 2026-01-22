@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 from typing import List, Tuple, Optional
@@ -29,31 +30,47 @@ except ImportError:
         sentences = re.split(r'[.!?]+', text)
         return [s.strip() for s in sentences if s.strip()]
 
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from transformers import AutoModelForSequenceClassification, AutoModelForCausalLM, AutoTokenizer
 from discussion_generator import LiteratureContext, generate_discussion_section
 from pubmed_tool import PubMedArticle, format_citation, format_reference
 
 class FactChecker:
     """Fact-checking agent that verifies claims in discussion text against cited abstracts."""
     
-    def __init__(self, model_name: str = 'gemini-1.5-flash'):
+    def __init__(self, mode: str='llm', model_name: str = 'Qwen/Qwen3-1.7B'):
         """
         Initialize the FactChecker.
         
         Args:
-            model_name: Name of the Gemini model to use for entailment checking
+            model_name: name of model to use. None if the mode is 'nli'
+            mode: mode to determine which of llm or nli to use
         """
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if not api_key:
-            raise ValueError("GOOGLE_API_KEY not found in environment variables")
-
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model_name)
+        self.mode = mode
         self.model_name = model_name
-        self.nli_model = AutoModelForSequenceClassification.from_pretrained('cross-encoder/nli-deberta-v3-base')
-        self.nli_model_tokenizer = AutoTokenizer.from_pretrained('cross-encoder/nli-deberta-v3-base')
-        self.nli_model.eval()
+            
         
+        if (self.mode == 'llm') & ('gemini' in self.model_name.lower()):        
+            api_key = os.getenv("GOOGLE_API_KEY")
+            if not api_key:
+                raise ValueError("GOOGLE_API_KEY not found in environment variables")
+            genai.configure(api_key=api_key)
+            self.model = genai.GenerativeModel(model_name)
+            self._check_entailment = self._check_entailment_gemini
+        elif (self.mode == 'llm') & ('gpt' in self.model_name.lower()):
+            pass
+        elif (self.mode == 'llm') & ('qwen3' in self.model_name.lower()):
+            self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+            self._check_entailment = self._check_entailment_qwen3
+        
+        if self.mode == 'nli':
+            self.model_name = None
+            self.model = AutoModelForSequenceClassification.from_pretrained('ynie/roberta-large-snli_mnli_fever_anli_R1_R2_R3-nli')
+            self.tokenizer = AutoTokenizer.from_pretrained('ynie/roberta-large-snli_mnli_fever_anli_R1_R2_R3-nli')
+            self.model.eval()
+            self.label_mapping = ['entailment', 'neutral', 'contradiction']
+            self._check_entailment = self._check_entailment_nli
+            
     def _find_matching_reference(self, cite: str, ref_list: List[PubMedArticle]) -> List[Tuple[int, PubMedArticle]]:
         """
         Find PubMedArticle instances that match a citation string.
@@ -111,24 +128,70 @@ class FactChecker:
         logger.debug(f"---- Inside _check_entailment_nli function ----")
         logger.debug(f"abstract: {abstract}, claim: {claim}")
         
-        inputs = self.nli_model_tokenizer([abstract], [claim], padding=True, truncation=True, return_tensors="pt")
+        inputs = self.tokenizer([abstract], [claim], padding=True, truncation=True, return_tensors="pt")
 
         with torch.no_grad():
-            scores = self.nli_model(**inputs).logits
-            label_mapping = ['contradiction', 'entailment', 'neutral']
+            scores = self.model(**inputs).logits
             score_max = scores.argmax(dim=1)[0]
-            label = label_mapping[score_max]
+            label = self.label_mapping[score_max]
             
             logger.debug(f"nli label: {label}")
             if label == 'entailment':
-                return True
+                return 1
             else:
-                return False
+                return 0
 
+    def _check_entailment_qwen3(self, claim: str, abstract: str) -> bool:
         
+        prompt = f"""Verify if the claim is stated in the abstract. The claim must be relevant to the content of the abstract and entailed by the abstract.
+Answer with yes or no. Enclose your answer with \\box{{}}.
+- claim: {claim}
+- abstract: {abstract}"""
+
+
+        messages = [
+            {"role": "user", "content": prompt}
+        ]
+        text = self.tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=True
+        )
+        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.model.device)
+
+        generated_ids = self.model.generate(
+            **model_inputs,
+            max_new_tokens=32768
+        )
+
+        output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist()
+
+        # parsing thinking content
+        try:
+            # rindex finding 151668 (</think>)
+            index = len(output_ids) - output_ids[::-1].index(151668)
+        except ValueError:
+            index = 0
+
+        thinking_content = self.tokenizer.decode(output_ids[:index], skip_special_tokens=True).strip("\n")
+        content = self.tokenizer.decode(output_ids[index:], skip_special_tokens=True).strip("\n")
+        
+        logger.debug(f"thinking content: {thinking_content}")
+        logger.debug(f"content: {content}")
+        
+        # Fallback: look for yes/no in the response
+        text_lower = content.lower()
+        if 'yes' in text_lower and 'no' not in text_lower:
+            return 1
+        elif 'no' in text_lower and 'yes' not in text_lower:
+            return 0
+        
+        # If unclear, default to 0 (conservative approach)
+        return 0
         
     
-    def _check_entailment_llm(self, claim: str, abstract: str) -> bool:
+    def _check_entailment_gemini(self, claim: str, abstract: str) -> bool:
         """
         Check if a claim is entailed by an abstract using LLM.
         
@@ -152,25 +215,14 @@ Answer with yes or no. Enclose your answer with \\box{{}}.
         except Exception as e:
             raise RuntimeError(f"Error checking entailment with LLM: {e}")
         
-        # Extract answer from boxed response
-        # Look for \box{yes} or \box{no} pattern
-        answer_match = re.search(r'\\box\{(\w+)\}', text, re.IGNORECASE)
-        if answer_match:
-            answer = answer_match.group(1).lower().strip()
-            if answer == "yes":
-                return True
-            elif answer == "no":
-                return False
-        
-        # Fallback: look for yes/no in the response
         text_lower = text.lower()
         if 'yes' in text_lower and 'no' not in text_lower:
-            return True
+            return 1
         elif 'no' in text_lower and 'yes' not in text_lower:
-            return False
+            return 0
         
-        # If unclear, default to False (conservative approach)
-        return False
+        # If unclear, default to 0 (conservative approach)
+        return 0
         
     def extract_and_verify_citations(self, discussion: str, ref_list: List[str], refs: LiteratureContext) -> List[dict]:
         """
@@ -239,7 +291,7 @@ Answer with yes or no. Enclose your answer with \\box{{}}.
                     verification_results.append({
                         'citation': cite_part,
                         'claim': claim,
-                        'verified': False,
+                        'verified': 0,
                         'reason': 'No matching reference found'
                     })
                     continue
@@ -249,7 +301,7 @@ Answer with yes or no. Enclose your answer with \\box{{}}.
                 matched_article = None
                 for article in matched_refs:
                     if article.abstract:
-                        entailed = self._check_entailment_nli(claim, article.abstract)
+                        entailed = self._check_entailment(claim, article.abstract)
                         if entailed:
                             matched_article = article
                             break
@@ -325,32 +377,31 @@ if __name__ == "__main__":
             pickle.dump(literature_context, f)
         
     
-    factchecker = FactChecker()
+    factchecker = FactChecker(model_name = 'Qwen/Qwen3-1.7B', mode = 'llm')
     verification_result = factchecker.verify_discussion(discussion, literature_context)
     
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    with open(os.path.join(output_dir, f'verification_result_{timestamp}.txt'), 'w') as f:
-        f.write('='*50)
-        f.write('\n')
-        f.write(f"Total citations: {verification_result['total_citations']}\n")
-        f.write(f"Verified count: {verification_result['verified']}\n")
-        f.write(f"Verification rate: {verification_result['verification_rate']}\n")
+            
+    raw_vr_data = [['citation', 'claim', 'matched_refs_count', 'abstract', 'entailment_yn'], ]
+    for result in verification_result['details']:
         
-        f.write('Raw verification results\n')
-        for result in verification_result['details']:
-            f.write(f"Citation: {result['citation']}\n")
-            f.write(f"Claim: {result['claim']}\n")
-            f.write(f"Verified: {result['verified']}\n")
-            if result.get('article', None) is not None:
-                try:
-                    f.write(f"Reference: {result['article'].authors[0]} ({result['article'].year}) {result['article'].title}\n")
-                    f.write(f"Abstract of the Reference: {result['article'].abstract}\n")
-                except:
-                    logger.debug(result['article'])
-            f.write("-" * 30 + "\n")
+        data_i = [
+            result['citation'],
+            result['claim'], 
+            result['matched_refs_count'] if 'matched_refs_count' in result.keys() else 0,
+            result['article'].abstract if ('article' in result.keys()) and (result['article'] is not None) else '', 
+                     # result['article'] is None if more than 1 references are matched but none entailed the claim.
+            result['verified'],
+        ]
+            
+        raw_vr_data.append(data_i)
         
-        f.write('='*50)
+    
+    with open(os.path.join(output_dir, f'verification_result_{timestamp}.csv'), 'w', newline='') as f:
+        
+        vr_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        vr_writer.writerows(raw_vr_data)
     
     
     
