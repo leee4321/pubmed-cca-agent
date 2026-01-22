@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 from typing import List, Tuple, Optional
@@ -330,27 +331,28 @@ if __name__ == "__main__":
     
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    with open(os.path.join(output_dir, f'verification_result_{timestamp}.txt'), 'w') as f:
-        f.write('='*50)
-        f.write('\n')
-        f.write(f"Total citations: {verification_result['total_citations']}\n")
-        f.write(f"Verified count: {verification_result['verified']}\n")
-        f.write(f"Verification rate: {verification_result['verification_rate']}\n")
+            
+    raw_vr_data = [['citation', 'claim', 'has_reference', 'matched_refs_count', 'entailment_yn', 'notes'], ]
+    for result in verification_result['details']:
         
-        f.write('Raw verification results\n')
-        for result in verification_result['details']:
-            f.write(f"Citation: {result['citation']}\n")
-            f.write(f"Claim: {result['claim']}\n")
-            f.write(f"Verified: {result['verified']}\n")
-            if result.get('article', None) is not None:
-                try:
-                    f.write(f"Reference: {result['article'].authors[0]} ({result['article'].year}) {result['article'].title}\n")
-                    f.write(f"Abstract of the Reference: {result['article'].abstract}\n")
-                except:
-                    logger.debug(result['article'])
-            f.write("-" * 30 + "\n")
+        # result['article'] is None if more than 1 references are matched but none entailed the claim.
+        data_i = [
+            result['citation'],
+            result['claim'], 
+            True if 'article' in result.keys() else False, 
+            result['matched_refs_count'] if 'matched_refs_count' in result.keys() else 0,
+            # result['article'].abstract if ('article' in result.keys()) and (result['article'] is not None) else '',
+            result['verified'],
+            ''
+        ]
+            
+        raw_vr_data.append(data_i)
         
-        f.write('='*50)
+    
+    with open(os.path.join(output_dir, f'verification_result_{timestamp}.csv'), 'w', newline='') as f:
+        
+        vr_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        vr_writer.writerows(raw_vr_data)
     
     
     
